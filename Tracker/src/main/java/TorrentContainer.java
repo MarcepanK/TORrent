@@ -32,13 +32,12 @@ public class TorrentContainer {
             Optional<TrackedPeer> peer = trackedTorrent.getPeerById(clientId);
             if (peer.isPresent()) {
                 trackedTorrent.removePeer(peer.get());
-                logger.info(String.format("peer {} is removed from torrent {}",
+                logger.info(String.format("peer %d is removed from torrent %s",
                         clientId, trackedTorrent.fileMetadata.name));
                 if (!trackedTorrent.hasAnyPeer()) {
                     trackedTorrents.remove(trackedTorrent);
                     logger.info(String.format("torrent %s has no peers and was removed",
                                     trackedTorrent.fileMetadata.name));
-
                 }
             }
         }

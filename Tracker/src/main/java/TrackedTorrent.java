@@ -21,12 +21,24 @@ public class TrackedTorrent {
         if (isUniquePeer(trackedPeer)) {
             peers.add(trackedPeer);
             logger.info(String.format("peer id: %d added to torrent %s", trackedPeer.id, fileMetadata.name));
+        } else {
+            logger.warning(String.format("Peer with id: %d is already tracking torrent: %s",
+                    trackedPeer.id, fileMetadata.name));
         }
     }
 
     public void removePeer(TrackedPeer trackedPeerToRemove) {
         peers.remove(trackedPeerToRemove);
         logger.info(String.format("peer id: %d removed from torrent %s", trackedPeerToRemove.id, fileMetadata.name));
+    }
+
+    public void removePeer(int peerId) {
+        Optional<TrackedPeer> peer = getPeerById(peerId);
+        if (peer.isPresent()) {
+            removePeer(peer.get());
+        } else {
+            logger.warning(String.format("peer with id: %d not found", peerId));
+        }
     }
 
     private boolean isUniquePeer(TrackedPeer peer) {
@@ -39,7 +51,7 @@ public class TrackedTorrent {
     }
 
     public boolean hasAnyPeer() {
-        return peers.isEmpty();
+        return peers.size() != 0;
     }
 
     public Optional<TrackedPeer> getPeerById(int id) {

@@ -1,13 +1,12 @@
 import java.io.Serializable;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
 public class ClientMetadata implements Serializable {
 
     public final int id;
-    public final InetAddress address;
+    public final InetSocketAddress address;
 
-    public ClientMetadata(int id, InetAddress address) {
+    public ClientMetadata(int id, InetSocketAddress address) {
         this.id = id;
         this.address = address;
     }

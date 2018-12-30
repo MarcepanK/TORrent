@@ -1,4 +1,8 @@
+import java.util.logging.Logger;
+
 public class TrackedPeer extends ClientMetadata {
+
+    private static final Logger logger = Logger.getLogger(TrackedPeer.class.getName());
 
     private long downloaded;
     private long uploaded;
@@ -16,6 +20,15 @@ public class TrackedPeer extends ClientMetadata {
         downloaded = 0;
         uploaded = 0;
         left = 0;
+    }
+
+    public void update(int downloaded, int uploaded) {
+        this.downloaded += downloaded;
+        left -= downloaded;
+        this.uploaded += uploaded;
+        if (left < 0) {
+            logger.warning(String.format("left < 0. Inspect on id: ", id));
+        }
     }
 
     public long getDownloaded() {

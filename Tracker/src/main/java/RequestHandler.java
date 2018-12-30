@@ -30,6 +30,8 @@ public class RequestHandler {
     }
 
     private void handleRequest(Request request) {
+        logger.info(String.format("Handling request: %s from id: %d",
+                request.requestCode.toString(), request.requesterId));
         switch(request.requestCode) {
             case FILE_LIST: handleFileListRequest(request);
             case PUSH: handlePushRequest(request);

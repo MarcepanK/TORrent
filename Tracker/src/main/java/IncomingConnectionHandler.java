@@ -1,3 +1,4 @@
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Logger;
@@ -15,6 +16,7 @@ public class IncomingConnectionHandler implements Runnable {
         try {
             serverSocket = new ServerSocket(Tracker.TRACKER_PORT);
         } catch (Exception e) {
+            logger.severe("Unable to create Sever Socket");
             e.printStackTrace();
         }
         this.connectionContainer = connectionContainer;
@@ -26,9 +28,10 @@ public class IncomingConnectionHandler implements Runnable {
         Object received = newConnection.receive();
         if(received instanceof ClientHandshake) {
             ClientHandshake handshake = (ClientHandshake) received;
-            ClientMetadata clientMetadata = new ClientMetadata(handshake.id, socket.getInetAddress());
+            InetSocketAddress sockAddress = (InetSocketAddress)socket.getRemoteSocketAddress();
+            ClientMetadata clientMetadata = new ClientMetadata(handshake.id, sockAddress);
             logger.info(String.format("Received handshake from: id: %d | address: %s | port: %d",
-                    clientMetadata.id, clientMetadata.address.getHostAddress(), clientMetadata.id));
+                    clientMetadata.id, clientMetadata.address.getAddress(), clientMetadata.id));
             torrentContainer.onClientConnected(clientMetadata, handshake.ownedFiles);
             connectionContainer.onClientConnected(clientMetadata.id, newConnection);
         }
@@ -39,6 +42,7 @@ public class IncomingConnectionHandler implements Runnable {
         try {
             handleNewConnection(serverSocket.accept());
         } catch (Exception e) {
+            logger.warning("Failed while running serverSocket");
             e.printStackTrace();
         }
     }

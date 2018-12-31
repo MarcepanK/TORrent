@@ -9,11 +9,11 @@ public class TorrentContainerTest {
 
     private ClientMetadata clientA = new ClientMetadata(1, new InetSocketAddress(1));
     private FileMetadata[] clientAFiles = { new FileMetadata("file1", 10, "md1"),
-                                    new FileMetadata("file2", 20, "md2")};
+                                            new FileMetadata("file2", 20, "md2")};
 
     private ClientMetadata clientB = new ClientMetadata(2, new InetSocketAddress(2));
     private FileMetadata[] clientBFiles = { new FileMetadata("file1", 10, "md1"),
-                                    new FileMetadata("file20", 200, "md20")};
+                                            new FileMetadata("file20", 200, "md20")};
 
     private TorrentContainer container;
 

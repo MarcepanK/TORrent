@@ -1,3 +1,4 @@
+import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -27,5 +28,9 @@ public class ConnectionContainer {
 
     public Optional<Connection> getConnectionById(int clientId) {
         return Optional.ofNullable(connections.get(clientId));
+    }
+
+    public Collection<Connection> getConnections() {
+        return connections.values();
     }
 }

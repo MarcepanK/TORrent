@@ -3,16 +3,16 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Logger;
 
-public class IncomingConnectionHandler implements Runnable {
+public class IncomingConnectionsHandler implements Runnable {
 
-    private static final Logger logger = Logger.getLogger(IncomingConnectionHandler.class.getName());
+    private static final Logger logger = Logger.getLogger(IncomingConnectionsHandler.class.getName());
 
     private ServerSocket serverSocket;
     private ConnectionContainer connectionContainer;
     private TorrentContainer torrentContainer;
 
-    public IncomingConnectionHandler(ConnectionContainer connectionContainer,
-                                     TorrentContainer torrentContainer) {
+    public IncomingConnectionsHandler(ConnectionContainer connectionContainer,
+                                      TorrentContainer torrentContainer) {
         try {
             serverSocket = new ServerSocket(Tracker.TRACKER_PORT);
         } catch (Exception e) {

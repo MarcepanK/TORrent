@@ -1,4 +1,4 @@
-import common.ClientIntroduction;
+import common.ClientHandshake;
 import common.FileMetadata;
 import request.Request;
 import request.RequestCode;
@@ -23,7 +23,7 @@ public class ClientMain {
                 ObjectInputStream ois = new ObjectInputStream(sock.getInputStream());
 
 
-                oos.writeObject(new ClientIntroduction(1, clientBFiles));
+                oos.writeObject(new ClientHandshake(1, clientBFiles));
                 oos.writeObject(new Request(1, RequestCode.FILE_LIST));
 
 

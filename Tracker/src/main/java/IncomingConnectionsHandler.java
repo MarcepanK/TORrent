@@ -1,4 +1,4 @@
-import common.ClientIntroduction;
+import common.ClientHandshake;
 import common.ClientMetadata;
 import common.Connection;
 
@@ -30,8 +30,8 @@ public class IncomingConnectionsHandler implements Runnable {
     private void handleNewConnection(Socket socket) {
         Connection newConnection = new Connection(socket);
         Object received = newConnection.receive();
-        if(received instanceof ClientIntroduction) {
-            ClientIntroduction handshake = (ClientIntroduction) received;
+        if(received instanceof ClientHandshake) {
+            ClientHandshake handshake = (ClientHandshake) received;
             InetSocketAddress sockAddress = (InetSocketAddress)socket.getRemoteSocketAddress();
             ClientMetadata clientMetadata = new ClientMetadata(handshake.id, sockAddress);
             logger.info(String.format("Received handshake from: id: %d | address: %s | port: %d",

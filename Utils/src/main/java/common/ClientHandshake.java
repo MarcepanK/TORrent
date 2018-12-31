@@ -3,12 +3,12 @@ package common;
 import java.io.File;
 import java.io.Serializable;
 
-public class ClientIntroduction implements Serializable {
+public class ClientHandshake implements Serializable {
 
     public final int id;
     public final FileMetadata[] ownedFiles;
 
-    public ClientIntroduction(int id, File[] files) {
+    public ClientHandshake(int id, File[] files) {
         this.id = id;
         ownedFiles = new FileMetadata[files.length];
         for(int i=0; i<files.length; i++) {
@@ -16,7 +16,7 @@ public class ClientIntroduction implements Serializable {
         }
     }
 
-    public ClientIntroduction(int id, FileMetadata[] files) {
+    public ClientHandshake(int id, FileMetadata[] files) {
         this.id = id;
         ownedFiles = files;
     }

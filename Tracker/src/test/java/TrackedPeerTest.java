@@ -1,14 +1,20 @@
+import common.ClientMetadata;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class TrackedPeerTest {
+
+    @Mock
+    private ClientMetadata clientMetadata;
 
     private final int initDownloaded = 10;
     private final int initUploaded = 5;
     private final int initLeft = 100;
-    private ClientMetadata clientMetadata = Mockito.mock(ClientMetadata.class);
 
     @Test
     public void TrackedPeerTest_CreationWithoutInitValues() {

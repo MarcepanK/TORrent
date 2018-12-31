@@ -1,3 +1,5 @@
+package common;
+
 import javax.xml.bind.DatatypeConverter;
 import java.io.File;
 import java.io.Serializable;

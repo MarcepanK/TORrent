@@ -2,7 +2,7 @@ package request;
 
 public class UpdateRequest extends Request {
 
-    public final long downloaded;
+    public final long downloaded;   //
     public final long uploaded;
     public final String fileName;
 

@@ -1,3 +1,4 @@
+import common.Connection;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,8 +10,11 @@ import static org.junit.Assert.*;
 @RunWith(MockitoJUnitRunner.class)
 public class ConnectionContainerTest {
 
-    @Mock Connection conA;
-    @Mock Connection conB;
+    @Mock
+    Connection conA;
+    @Mock
+    Connection conB;
+
     private int conAId = 1;
     private int conBId = 2;
 

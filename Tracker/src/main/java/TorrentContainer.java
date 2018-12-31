@@ -1,3 +1,6 @@
+import common.ClientMetadata;
+import common.FileMetadata;
+
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;

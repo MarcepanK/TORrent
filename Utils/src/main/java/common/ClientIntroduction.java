@@ -1,3 +1,5 @@
+package common;
+
 import java.io.File;
 import java.io.Serializable;
 
@@ -12,5 +14,10 @@ public class ClientIntroduction implements Serializable {
         for(int i=0; i<files.length; i++) {
             ownedFiles[i] = new FileMetadata(files[i]);
         }
+    }
+
+    public ClientIntroduction(int id, FileMetadata[] files) {
+        this.id = id;
+        ownedFiles = files;
     }
 }

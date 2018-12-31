@@ -22,7 +22,6 @@ public class Tracker {
         requestExecutor = new RequestExecutor(connectionContainer, torrentContainer);
         incomingRequestsHandler = new IncomingRequestsHandler(connectionContainer.getConnections(), requestExecutor);
         executorService = Executors.newFixedThreadPool(2);
-        launch();
     }
 
     public void launch() {

@@ -1,5 +1,6 @@
 public class TrackerMain {
     public static void main(String[] args) {
-        new Tracker();
+        Tracker tracker = new Tracker();
+        tracker.launch();
     }
 }

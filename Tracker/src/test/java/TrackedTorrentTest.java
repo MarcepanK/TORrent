@@ -1,3 +1,5 @@
+import common.ClientMetadata;
+import common.FileMetadata;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,8 +22,6 @@ public class TrackedTorrentTest {
 
     @Test
     public void TrackedTorrent_Creation() {
-        TrackedTorrent torrent = new TrackedTorrent(fileMetadata, peerA);
-
         assertTrue(torrent.hasAnyPeer());
         assertEquals(torrent.fileMetadata, fileMetadata);
         assertTrue(torrent.getPeerById(peerA.id).isPresent());
@@ -29,8 +29,6 @@ public class TrackedTorrentTest {
 
     @Test
     public void TrackedTorrent_RemovePeer_singlePeer() {
-        TrackedTorrent torrent = new TrackedTorrent(fileMetadata, peerA);
-
         torrent.removePeer(peerA.id);
         assertFalse(torrent.getPeerById(peerA.id).isPresent());
         assertFalse(torrent.hasAnyPeer());

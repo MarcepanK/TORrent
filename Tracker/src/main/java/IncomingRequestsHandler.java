@@ -1,8 +1,7 @@
+import common.Connection;
 import request.Request;
 
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 
 public class IncomingRequestsHandler implements Runnable {
 

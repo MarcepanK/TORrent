@@ -40,12 +40,13 @@ public class RequestFactoryTest {
 
     @Test
     public void RequestFactory_Pull_Correct() {
-        String requestStr = "pull file";
+        String requestStr = "pull file 1024";
         PullRequest request = (PullRequest) RequestFactory.getRequest(requesterId, requestStr);
 
         assertEquals(request.requesterId, requesterId);
         assertEquals(request.requestCode, RequestCode.PULL);
         assertEquals(request.fileName, "file");
+        assertEquals(request.downloaded, 1024L);
     }
 
     @Test

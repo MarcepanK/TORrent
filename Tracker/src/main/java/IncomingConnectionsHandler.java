@@ -1,3 +1,7 @@
+import common.ClientIntroduction;
+import common.ClientMetadata;
+import common.Connection;
+
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;

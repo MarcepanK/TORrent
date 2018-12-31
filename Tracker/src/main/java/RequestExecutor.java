@@ -1,7 +1,4 @@
-import request.UpdateRequest;
-import request.PullRequest;
-import request.PushRequest;
-import request.Request;
+import request.*;
 
 import java.util.logging.Logger;
 
@@ -30,8 +27,7 @@ public class RequestExecutor {
 
     private void handleFileListRequest(Request request) {
         connectionContainer.getConnectionById(request.requesterId).ifPresent(
-                connection -> connection.send(torrentContainer.getAllTrackedTorrentsFileMetadata())
-        );
+                connection -> connection.send(torrentContainer.getAllTrackedTorrentsFileMetadata()));
     }
 
     private void handlePullRequest(PullRequest pullRequest) {
@@ -43,7 +39,8 @@ public class RequestExecutor {
     }
 
     private void handleUnknownRequest(Request request) {
-
+        connectionContainer.getConnectionById(request.requesterId).ifPresent(
+                connection -> connection.send("Unknown request code"));
     }
 
     public void handleRequest(Request request) {

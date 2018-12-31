@@ -38,11 +38,14 @@ public class RequestFactory {
     }
 
     private static PullRequest getPullRequest(int requesterId, String[] args) {
-       if (args.length == 1) {
-           String fileName = args[0];
-           return new PullRequest(requesterId, RequestCode.PULL, fileName);
+       if (args.length == 2) {
+           if (args[1].matches("[0-9]+")) {
+               String fileName = args[0];
+               long downloaded = Long.parseLong(args[1]);
+               return new PullRequest(requesterId, RequestCode.PULL, fileName, downloaded);
+           }
        }
-       return new PullRequest(requesterId, RequestCode.UNKNOWN, null);
+       return new PullRequest(requesterId, RequestCode.UNKNOWN, null, 0);
     }
 
     private static PushRequest getPushRequest(int requesterId, String[] args) {

@@ -26,16 +26,18 @@ public class TorrentContainer {
     }
 
     public void onClientDisconnected(int clientId) {
-        for (TrackedTorrent trackedTorrent : trackedTorrents) {
-            Optional<TrackedPeer> peer = trackedTorrent.getPeerById(clientId);
+        Iterator<TrackedTorrent> torrentIterator = trackedTorrents.iterator();
+        while(torrentIterator.hasNext()) {
+            TrackedTorrent torrent = torrentIterator.next();
+            Optional<TrackedPeer> peer = torrent.getPeerById(clientId);
             if (peer.isPresent()) {
-                trackedTorrent.removePeer(peer.get());
+                torrent.removePeer(peer.get());
                 logger.info(String.format("peer %d is removed from torrent %s",
-                        clientId, trackedTorrent.fileMetadata.name));
-                if (!trackedTorrent.hasAnyPeer()) {
-                    trackedTorrents.remove(trackedTorrent);
+                        clientId, torrent.fileMetadata.name));
+                if (!torrent.hasAnyPeer()) {
+                    torrentIterator.remove();
                     logger.info(String.format("torrent %s has no peers and was removed",
-                                    trackedTorrent.fileMetadata.name));
+                            torrent.fileMetadata.name));
                 }
             }
         }

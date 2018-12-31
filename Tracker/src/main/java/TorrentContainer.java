@@ -1,8 +1,6 @@
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class TorrentContainer {
 
@@ -59,6 +57,10 @@ public class TorrentContainer {
             }
         }
         return Optional.empty();
+    }
+
+    public List<FileMetadata> getAllTrackedTorrentsFileMetadata() {
+        return trackedTorrents.stream().map(trackedTorrent -> trackedTorrent.fileMetadata).collect(Collectors.toList());
     }
 
 }

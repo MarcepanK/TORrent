@@ -26,8 +26,8 @@ public class IncomingConnectionHandler implements Runnable {
     private void handleNewConnection(Socket socket) {
         Connection newConnection = new Connection(socket);
         Object received = newConnection.receive();
-        if(received instanceof ClientHandshake) {
-            ClientHandshake handshake = (ClientHandshake) received;
+        if(received instanceof ClientIntroduction) {
+            ClientIntroduction handshake = (ClientIntroduction) received;
             InetSocketAddress sockAddress = (InetSocketAddress)socket.getRemoteSocketAddress();
             ClientMetadata clientMetadata = new ClientMetadata(handshake.id, sockAddress);
             logger.info(String.format("Received handshake from: id: %d | address: %s | port: %d",

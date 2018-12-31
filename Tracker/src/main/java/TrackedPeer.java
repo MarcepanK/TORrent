@@ -22,7 +22,7 @@ public class TrackedPeer extends ClientMetadata {
         left = 0;
     }
 
-    public void update(int downloaded, int uploaded) {
+    public void update(long downloaded, long uploaded) {
         this.downloaded += downloaded;
         left -= downloaded;
         this.uploaded += uploaded;

@@ -30,6 +30,9 @@ public class RequestExecutor implements Runnable {
     }
 
     private void handleFileListRequest(Request request) {
+        connectionContainer.getConnectionById(request.requesterId).ifPresent(
+                connection -> connection.send(torrentContainer.getAllTrackedTorrentsFileMetadata())
+        );
     }
 
     private void handlePullRequest(PullRequest pullRequest) {

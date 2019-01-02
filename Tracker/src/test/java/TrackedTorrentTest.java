@@ -30,6 +30,7 @@ public class TrackedTorrentTest {
     @Test
     public void TrackedTorrent_RemovePeer_singlePeer() {
         torrent.removePeer(peerA.id);
+
         assertFalse(torrent.getPeerById(peerA.id).isPresent());
         assertFalse(torrent.hasAnyPeer());
     }

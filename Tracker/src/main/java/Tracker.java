@@ -10,18 +10,16 @@ public class Tracker {
 
     private TorrentContainer torrentContainer;
     private ConnectionContainer connectionContainer;
-    private IncomingConnectionsHandler incomingConnectionsHandler;
     private RequestExecutor requestExecutor;
+    private IncomingConnectionsHandler incomingConnectionsHandler;
     private IncomingRequestsHandler incomingRequestsHandler;
-    private ExecutorService executorService;
 
     public Tracker() {
         torrentContainer = new TorrentContainer();
         connectionContainer = new ConnectionContainer();
+        incomingRequestsHandler = new IncomingRequestsHandler(connectionContainer.getConnections(), requestExecutor);
         incomingConnectionsHandler = new IncomingConnectionsHandler(connectionContainer, torrentContainer);
         requestExecutor = new RequestExecutor(connectionContainer, torrentContainer);
-        incomingRequestsHandler = new IncomingRequestsHandler(connectionContainer.getConnections(), requestExecutor);
-        executorService = Executors.newFixedThreadPool(2);
     }
 
     public void launch() {

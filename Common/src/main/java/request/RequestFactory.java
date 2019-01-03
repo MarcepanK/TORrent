@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class RequestFactory {
 
-    public static Request getRequest(int requesterId, String requestArgs) {
+    public static SimpleRequest getRequest(int requesterId, String requestArgs) {
         String[] args = requestArgs.split("\\s+");
         String requestCodeArg = args[0].toLowerCase();
         switch(requestCodeArg) {
@@ -13,12 +13,12 @@ public class RequestFactory {
             case "files":      return getFileListRequest(requesterId);
             case "pull":       return getPullRequest(requesterId, Arrays.copyOfRange(args, 1, args.length));
             case "push":       return getPushRequest(requesterId, Arrays.copyOfRange(args, 1, args.length));
-            default:           return new Request(requesterId, RequestCode.UNKNOWN);
+            default:           return new SimpleRequest(requesterId, RequestCode.UNKNOWN);
         }
     }
 
-    private static Request getDisconnectRequest(int requesterId) {
-        return new Request(requesterId, RequestCode.DISCONNECT);
+    private static SimpleRequest getDisconnectRequest(int requesterId) {
+        return new SimpleRequest(requesterId, RequestCode.DISCONNECT);
     }
 
     private static UpdateRequest getUpdateRequest(int requesterId, String[] args) {
@@ -33,8 +33,8 @@ public class RequestFactory {
         return new UpdateRequest(requesterId, RequestCode.UNKNOWN, 0,0, null);
     }
 
-    private static Request getFileListRequest(int requesterId) {
-        return new Request(requesterId, RequestCode.FILE_LIST);
+    private static SimpleRequest getFileListRequest(int requesterId) {
+        return new SimpleRequest(requesterId, RequestCode.FILE_LIST);
     }
 
     private static PullRequest getPullRequest(int requesterId, String[] args) {

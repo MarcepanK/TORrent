@@ -1,6 +1,3 @@
-import common.ClientMetadata;
-import common.FileMetadata;
-
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -15,9 +12,18 @@ public class TorrentContainer {
         trackedTorrents = Collections.synchronizedList(new LinkedList<>());
     }
 
+    /**
+     * Invoked when new client connects to tracker.
+     * Checks if file owned by new client is already tracked (other clients may have it)
+     * if (true) -> adds new peer(new client) to already tracked torrent
+     * if (false) -> creates new tracked torrent and ads new client as it's peer
+     *
+     * @param clientMetadata newly connected client metadata(InetSocketAddress and id)
+     * @param files FileMetadata of files owned by newly connected client
+     */
     public void onClientConnected(ClientMetadata clientMetadata, FileMetadata[] files) {
         for (FileMetadata fileMetadata : files) {
-            Optional<TrackedTorrent> torrent = getTrackedTorrentByMd5sum(fileMetadata.md5sum);
+            Optional<TrackedTorrent> torrent = getTrackedTorrentByFileName(fileMetadata.name);
             if (torrent.isPresent()) {
                 torrent.get().addPeer(new TrackedPeer(clientMetadata));
                 logger.info(String.format("Torrent %s found. Peer %d added.", fileMetadata.name, clientMetadata.id));
@@ -28,6 +34,14 @@ public class TorrentContainer {
         }
     }
 
+    /**
+     * Invoked when client disconnects
+     * Iterates through all tracked torrents and checks if client
+     * that disconnected was peer of said torrent
+     * if (true) -> removes peer and checks if torrent has any peer (if not removes torrent)
+     *
+     * @param clientId id of a client that disconnected from tracker
+     */
     public void onClientDisconnected(int clientId) {
         Iterator<TrackedTorrent> torrentIterator = trackedTorrents.iterator();
         while(torrentIterator.hasNext()) {
@@ -49,15 +63,6 @@ public class TorrentContainer {
     public Optional<TrackedTorrent> getTrackedTorrentByFileName(String fileName) {
         for (TrackedTorrent torrent : trackedTorrents) {
             if (torrent.fileMetadata.name.equals(fileName)) {
-                return Optional.of(torrent);
-            }
-        }
-        return Optional.empty();
-    }
-
-    public Optional<TrackedTorrent> getTrackedTorrentByMd5sum(String md5sum) {
-        for (TrackedTorrent torrent : trackedTorrents) {
-            if (torrent.fileMetadata.md5sum.equals(md5sum)) {
                 return Optional.of(torrent);
             }
         }

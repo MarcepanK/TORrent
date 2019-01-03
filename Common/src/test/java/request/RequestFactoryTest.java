@@ -11,10 +11,10 @@ public class RequestFactoryTest {
     @Test
     public void RequestFactory_Disconnect_Correct() {
         String requestStr = "disconnect";
-        Request request = RequestFactory.getRequest(requesterId, requestStr);
+        SimpleRequest simpleRequest = RequestFactory.getRequest(requesterId, requestStr);
 
-        assertEquals(request.requesterId, requesterId);
-        assertEquals(request.requestCode, RequestCode.DISCONNECT);
+        assertEquals(simpleRequest.requesterId, requesterId);
+        assertEquals(simpleRequest.requestCode, RequestCode.DISCONNECT);
     }
 
     @Test
@@ -32,10 +32,10 @@ public class RequestFactoryTest {
     @Test
     public void RequestFactory_FileList_Correct() {
         String requestStr = "files";
-        Request request = RequestFactory.getRequest(requesterId, requestStr);
+        SimpleRequest simpleRequest = RequestFactory.getRequest(requesterId, requestStr);
 
-        assertEquals(request.requesterId, requesterId);
-        assertEquals(request.requestCode, RequestCode.FILE_LIST);
+        assertEquals(simpleRequest.requesterId, requesterId);
+        assertEquals(simpleRequest.requestCode, RequestCode.FILE_LIST);
     }
 
     @Test
@@ -63,10 +63,10 @@ public class RequestFactoryTest {
     @Test
     public void RequestFactory_Request_Invalid() {
         String requestStr = "tradalksd";
-        Request request = RequestFactory.getRequest(requesterId, requestStr);
+        SimpleRequest simpleRequest = RequestFactory.getRequest(requesterId, requestStr);
 
-        assertEquals(request.requesterId, requesterId);
-        assertEquals(request.requestCode, RequestCode.UNKNOWN);
+        assertEquals(simpleRequest.requesterId, requesterId);
+        assertEquals(simpleRequest.requestCode, RequestCode.UNKNOWN);
     }
 
     @Test

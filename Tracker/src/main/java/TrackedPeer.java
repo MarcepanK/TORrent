@@ -1,5 +1,3 @@
-import common.ClientMetadata;
-
 import java.util.logging.Logger;
 
 public class TrackedPeer extends ClientMetadata {
@@ -32,6 +30,7 @@ public class TrackedPeer extends ClientMetadata {
             logger.warning(String.format("left < 0. Inspect on id: %d", id));
         }
     }
+
 
     public long getDownloaded() {
         return downloaded;

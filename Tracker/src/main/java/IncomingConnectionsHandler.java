@@ -1,7 +1,3 @@
-import common.ClientHandshake;
-import common.ClientMetadata;
-import common.Connection;
-
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -27,6 +23,13 @@ public class IncomingConnectionsHandler implements Runnable {
         this.torrentContainer = torrentContainer;
     }
 
+    /**
+     * Invoked when client connects to serverSocket.
+     * Awaits for client to send a Handshake
+     * @see ClientHandshake
+     *
+     * @param socket
+     */
     private void handleNewConnection(Socket socket) {
         Connection newConnection = new Connection(socket);
         Object received = newConnection.receive();

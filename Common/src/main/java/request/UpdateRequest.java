@@ -1,6 +1,6 @@
 package request;
 
-public class UpdateRequest extends Request {
+public class UpdateRequest extends SimpleRequest {
 
     public final long downloaded;   //
     public final long uploaded;

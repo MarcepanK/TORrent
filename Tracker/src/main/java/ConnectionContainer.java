@@ -1,16 +1,18 @@
-import common.Connection;
-
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Logger;
 
 public class ConnectionContainer {
 
     private static final Logger logger = Logger.getLogger(ConnectionContainer.class.getName());
 
-    private ConcurrentMap<Integer, Connection> connections;
+    /**
+     * key - client id
+     * value - connection to the client
+     */
+    private Map<Integer, Connection> connections;
 
     public ConnectionContainer() {
         connections = new ConcurrentHashMap<>();
@@ -21,6 +23,12 @@ public class ConnectionContainer {
         logger.info(String.format("New common.Connection has been established with id: %d", clientId));
     }
 
+    /**
+     * Invoked when Client sends Disconnect request
+     * Closes connection with client and removes it from connections list
+     *
+     * @param clientId id of a client that wants to disconnect from tracker
+     */
     public void onClientDisconnected(int clientId) {
         Connection conn = connections.get(clientId);
         conn.close();

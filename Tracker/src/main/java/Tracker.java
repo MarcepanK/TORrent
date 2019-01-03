@@ -1,5 +1,3 @@
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 public class Tracker {
@@ -10,16 +8,16 @@ public class Tracker {
 
     private TorrentContainer torrentContainer;
     private ConnectionContainer connectionContainer;
-    private RequestExecutor requestExecutor;
     private IncomingConnectionsHandler incomingConnectionsHandler;
+    private RequestProcessor requestProcessor;
     private IncomingRequestsHandler incomingRequestsHandler;
 
     public Tracker() {
         torrentContainer = new TorrentContainer();
         connectionContainer = new ConnectionContainer();
-        incomingRequestsHandler = new IncomingRequestsHandler(connectionContainer.getConnections(), requestExecutor);
         incomingConnectionsHandler = new IncomingConnectionsHandler(connectionContainer, torrentContainer);
-        requestExecutor = new RequestExecutor(connectionContainer, torrentContainer);
+        requestProcessor = new RequestProcessor(connectionContainer, torrentContainer);
+        incomingRequestsHandler = new IncomingRequestsHandler(connectionContainer, requestProcessor);
     }
 
     public void launch() {

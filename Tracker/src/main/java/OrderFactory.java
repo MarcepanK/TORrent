@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 /**
- * <p>This class is responsible to create Orders on given data</p>
- * <p>used in {@link RequestProcessor}</p>
+ * <p>This class is responsible for creating Orders depending on given data</p>
+ * <p>used by {@link RequestProcessor}</p>
  */
 public class OrderFactory {
 
@@ -34,7 +34,7 @@ public class OrderFactory {
         if (torrent.isPresent()) {
             TrackedPeer[] seeds = torrent.get().getPeersWithCompleteFile();
             for(int i=0; i<seeds.length; i++) {
-                uploadOrders.add(new UploadOrder(torrent.get().fileMetadata, seeds[i].clientMetadata, i, seeds.length));
+                uploadOrders.add(new UploadOrder(torrent.get().fileMetadata, seeds[i].clientMetadata, i+1, seeds.length));
             }
         }
         uploadOrders.trimToSize();

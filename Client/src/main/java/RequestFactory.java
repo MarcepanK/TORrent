@@ -28,14 +28,26 @@ public class RequestFactory {
         }
     }
 
+    /**
+     * @return {@link Request} with Disconnect {@link RequestCode}
+     */
     private Request getDisconnectRequest() {
         return new Request(clientId, RequestCode.DISCONNECT);
     }
 
+    /**
+     * @return {@link Request} with FILE_LIST {@link RequestCode}
+     */
     private Request getFileListRequest() {
         return new Request(clientId, RequestCode.FILE_LIST);
     }
 
+    /**
+     * This function checks if given arguments are correct and returns {@link PullRequest}
+     *
+     * @param args
+     * @return {@link PullRequest}
+     */
     private PullRequest getPullRequest(String[] args) {
        if (args.length == 2) {
            if (args[1].matches("[0-9]+")) {

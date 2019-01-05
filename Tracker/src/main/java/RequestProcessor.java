@@ -3,7 +3,6 @@ import order.DownloadOrder;
 import order.UploadOrder;
 import request.*;
 
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
 public class RequestProcessor {
@@ -13,19 +12,20 @@ public class RequestProcessor {
     private ConnectionContainer connectionContainer;
     private TorrentContainer torrentContainer;
     private OrderFactory orderFactory;
+    private OrderSender orderSender;
 
     public RequestProcessor(ConnectionContainer connectionContainer, TorrentContainer torrentContainer) {
         this.connectionContainer = connectionContainer;
         this.torrentContainer = torrentContainer;
         orderFactory = new OrderFactory(torrentContainer);
+        orderSender = new OrderSender(connectionContainer);
     }
 
     /**
      * Removes client from every tracked torrent and connection container
-     * @param requesterMetadata {@link ClientMetadata} of client that sent request
      * @param request {@link Request} that has been received
      */
-    private void processDisconnectRequest(ClientMetadata requesterMetadata, Request request) {
+    private void processDisconnectRequest(Request request) {
         logger.info(String.format("Handling %s simpleRequest from %d",
                 request.requestCode.toString(), request.requesterId));
         torrentContainer.onClientDisconnected(request.requesterId);
@@ -34,10 +34,9 @@ public class RequestProcessor {
 
     /**
      * Updates state of {@link TrackedPeer} downloaded, uploaded and left fields
-     * @param requesterMetadata {@link ClientMetadata} of client that sent request
      * @param request {@link UpdateRequest} that has been received
      */
-    private void processUpdateRequest(ClientMetadata requesterMetadata, UpdateRequest request) {
+    private void processUpdateRequest(UpdateRequest request) {
         logger.info(String.format("Handling %s request | from: %d | downloaded: %d uploaded %d",
                 request.requestCode.toString(), request.requesterId, request.downloaded, request.uploaded));
         torrentContainer.getTrackedTorrentByFileName(request.fileName).ifPresent(
@@ -47,10 +46,9 @@ public class RequestProcessor {
 
     /**
      * Sends array of {@link common.FileMetadata} of all tracked torrents to requester
-     * @param requesterMetadata {@link ClientMetadata} of client that sent request
      * @param request {@link Request} that has been received
      */
-    private void processFileListRequest(ClientMetadata requesterMetadata, Request request) {
+    private void processFileListRequest(Request request) {
         logger.info(String.format("Handling %s simpleRequest | from %d",
                 request.requestCode.toString(), request.requesterId));
         connectionContainer.getConnectionById(request.requesterId).ifPresent(
@@ -66,13 +64,7 @@ public class RequestProcessor {
     private void processPullRequest(ClientMetadata requesterMetadata, PullRequest request) {
         logger.info(String.format("Handling %s request | from %d | file: %s already has: %d",
                 request.requestCode.toString(), request.requesterId, request.fileName, request.downloaded));
-        ArrayList<UploadOrder> uploadOrders = orderFactory.getUploadOrders(request);
-        DownloadOrder downloadOrder = orderFactory.getDownloadOrder(request);
-        connectionContainer.getConnectionById(uploadOrders.get(0).leech.id).ifPresent(conn->conn.send(downloadOrder));
-        for (int i=0; i < downloadOrder.seeds.length; i++) {
-            final int finalI = i;
-            connectionContainer.getConnectionById(downloadOrder.seeds[finalI].id).ifPresent(conn -> conn.send(uploadOrders.get(finalI)));
-        }
+        orderSender.sendOutOrders(orderFactory.getDownloadOrder(request), orderFactory.getUploadOrders(request));
     }
 
     /**
@@ -84,15 +76,14 @@ public class RequestProcessor {
     private void processPushRequest(ClientMetadata requesterMetadata, PushRequest request) {
         logger.info(String.format("Handling %s request | from %d to %d | file: %s",
                 request.requestCode.toString(), request.requesterId, request.destinationHostId, request.fileName));
-
+        orderSender.sendOutOrders(orderFactory.getDownloadOrder(request), orderFactory.getUploadOrder(request));
     }
 
     /**
      * Sends message to requester about bad request args
-     * @param requesterMetadata {@link ClientMetadata} of client that sent request
      * @param request {@link Request} that has been received
      */
-    private void handleUnknownRequest(ClientMetadata requesterMetadata, Request request) {
+    private void handleUnknownRequest(Request request) {
         logger.warning(String.format("Unknown simpleRequest from: %d", request.requesterId));
         connectionContainer.getConnectionById(request.requesterId).ifPresent(
                 connection -> connection.send("Bad Request"));
@@ -107,13 +98,13 @@ public class RequestProcessor {
         new Thread(() -> {
             switch (request.requestCode) {
                 case DISCONNECT:
-                    processDisconnectRequest(requesterMetadata, request);
+                    processDisconnectRequest(request);
                     break;
                 case UPDATE:
-                    processUpdateRequest(requesterMetadata, (UpdateRequest) request);
+                    processUpdateRequest((UpdateRequest) request);
                     break;
                 case FILE_LIST:
-                    processFileListRequest(requesterMetadata, request);
+                    processFileListRequest(request);
                     break;
                 case PUSH:
                     processPushRequest(requesterMetadata, (PushRequest) request);
@@ -122,7 +113,7 @@ public class RequestProcessor {
                     processPullRequest(requesterMetadata, (PullRequest) request);
                     break;
                 default:
-                    handleUnknownRequest(requesterMetadata, request);
+                    handleUnknownRequest(request);
                     break;
             }
         }).start();

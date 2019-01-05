@@ -1,4 +1,4 @@
-import request.RequestFactory;
+import common.Connection;
 import request.*;
 
 import java.util.logging.Logger;
@@ -9,24 +9,20 @@ public class CommandProcessor {
 
     private int clientId;
     private Connection trackerConnection;
-    private FileTransferServiceContainer fileTransferServiceContainer;
+    private RequestFactory requestFactory;
 
-    public CommandProcessor(Connection trackerConnection, FileTransferServiceContainer fileTransferServiceContainer) {
+    public CommandProcessor(int clientId, Connection trackerConnection) {
+        this.clientId = clientId;
         this.trackerConnection = trackerConnection;
-        this.fileTransferServiceContainer = fileTransferServiceContainer;
+        requestFactory = new RequestFactory(clientId);
     }
 
-    private void processRequestCommand(String command) {
-        SimpleRequest request = RequestFactory.getRequest(clientId, command);
+    private void processRequestCommand(String requestArgs) {
+        Request request = requestFactory.getRequest(requestArgs);
         trackerConnection.send(request);
     }
 
     private void processListCommand(String listCommandArg) {
-        if (listCommandArg.equals("transfers")) {
-            for (FileTransferService service : fileTransferServiceContainer.getAllServices()) {
-                System.out.println(service.toString());
-            }
-        }
     }
 
     //FIXME

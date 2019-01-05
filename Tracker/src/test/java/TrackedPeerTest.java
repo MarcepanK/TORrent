@@ -1,3 +1,4 @@
+import common.ClientMetadata;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

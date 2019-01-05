@@ -1,3 +1,5 @@
+import common.ClientMetadata;
+import common.FileMetadata;
 import org.junit.Before;
 import org.junit.Test;
 

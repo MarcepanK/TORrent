@@ -1,3 +1,7 @@
+import common.ClientHandshake;
+import common.ClientMetadata;
+import common.Connection;
+
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -37,10 +41,10 @@ public class IncomingConnectionsHandler implements Runnable {
             ClientHandshake handshake = (ClientHandshake) received;
             InetSocketAddress sockAddress = (InetSocketAddress)socket.getRemoteSocketAddress();
             ClientMetadata clientMetadata = new ClientMetadata(handshake.id, sockAddress);
+            torrentContainer.onClientConnected(clientMetadata, handshake.ownedFiles);
+            connectionContainer.onClientConnected(clientMetadata, newConnection);
             logger.info(String.format("Received handshake from: id: %d | address: %s | port: %d",
                     clientMetadata.id, clientMetadata.address.getAddress(), clientMetadata.id));
-            torrentContainer.onClientConnected(clientMetadata, handshake.ownedFiles);
-            connectionContainer.onClientConnected(clientMetadata.id, newConnection);
         }
     }
 

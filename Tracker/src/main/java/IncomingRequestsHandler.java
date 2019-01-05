@@ -1,4 +1,6 @@
-import request.SimpleRequest;
+import common.ClientMetadata;
+import common.Connection;
+import request.Request;
 
 import java.util.Collection;
 
@@ -21,8 +23,8 @@ public class IncomingRequestsHandler implements Runnable {
         Collection<Connection> connections = connectionContainer.getConnections();
         for (Connection conn : connections) {
             Object recv = conn.receive();
-            if (recv instanceof SimpleRequest) {
-                requestProcessor.processRequest((SimpleRequest)recv);
+            if (recv instanceof Request) {
+                connectionContainer.getClientMetadataByConnection(conn).ifPresent(metadata-> requestProcessor.processRequest(metadata, (Request)recv));
             }
         }
     }

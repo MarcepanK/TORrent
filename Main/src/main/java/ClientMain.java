@@ -1,4 +1,6 @@
-import request.SimpleRequest;
+import common.ClientHandshake;
+import common.FileMetadata;
+import request.Request;
 import request.RequestCode;
 
 import java.io.IOException;
@@ -21,7 +23,7 @@ public class ClientMain {
 
 
             oos.writeObject(new ClientHandshake(1, clientBFiles));
-            oos.writeObject(new SimpleRequest(1, RequestCode.FILE_LIST));
+            oos.writeObject(new Request(1, RequestCode.FILE_LIST));
 
 
             while (true) {

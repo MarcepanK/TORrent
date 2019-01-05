@@ -1,7 +1,6 @@
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import common.FileMetadata;
+
+import java.util.*;
 import java.util.logging.Logger;
 
 public class TrackedTorrent {
@@ -20,16 +19,17 @@ public class TrackedTorrent {
     public void addPeer(TrackedPeer trackedPeer) {
         if (isUniquePeer(trackedPeer)) {
             peers.add(trackedPeer);
-            logger.info(String.format("peer id: %d added to torrent %s", trackedPeer.id, fileMetadata.name));
+            logger.info(String.format("peer id: %d added to torrent %s", trackedPeer.clientMetadata.id, fileMetadata.name));
         } else {
             logger.warning(String.format("Peer with id: %d is already tracking torrent: %s",
-                    trackedPeer.id, fileMetadata.name));
+                    trackedPeer.clientMetadata.id, fileMetadata.name));
         }
     }
 
     public void removePeer(TrackedPeer trackedPeerToRemove) {
         peers.remove(trackedPeerToRemove);
-        logger.info(String.format("peer id: %d removed from torrent %s", trackedPeerToRemove.id, fileMetadata.name));
+        logger.info(String.format("peer id: %d removed from torrent %s",
+                trackedPeerToRemove.clientMetadata.id, fileMetadata.name));
     }
 
     public void removePeer(int peerId) {
@@ -43,11 +43,20 @@ public class TrackedTorrent {
 
     private boolean isUniquePeer(TrackedPeer peer) {
         for (TrackedPeer trackedPeer : peers) {
-            if (trackedPeer.id == peer.id) {
+            if (trackedPeer.clientMetadata.id == peer.clientMetadata.id) {
                 return false;
             }
         }
         return true;
+    }
+
+    public boolean isPeer(int clientId) {
+        for (TrackedPeer peer : peers) {
+            if (peer.clientMetadata.id == clientId) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean hasAnyPeer() {
@@ -56,10 +65,25 @@ public class TrackedTorrent {
 
     public Optional<TrackedPeer> getPeerById(int id) {
         for (TrackedPeer trackedPeer : peers) {
-            if (trackedPeer.id == id) {
+            if (trackedPeer.clientMetadata.id == id) {
                 return Optional.of(trackedPeer);
             }
         }
         return Optional.empty();
+    }
+
+    public TrackedPeer[] getAllPeers() {
+        return peers.toArray(new TrackedPeer[peers.size()]);
+    }
+
+    public TrackedPeer[] getPeersWithCompleteFile() {
+        ArrayList<TrackedPeer> seeds = new ArrayList<>();
+        TrackedPeer[] allPeers = getAllPeers();
+        for (TrackedPeer peer : allPeers) {
+            if (peer.getLeft() == 0) {
+                seeds.add(peer);
+            }
+        }
+        return (TrackedPeer[]) seeds.toArray();
     }
 }

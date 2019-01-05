@@ -1,6 +1,6 @@
 package request;
 
-public class PullRequest extends SimpleRequest {
+public class PullRequest extends Request {
 
     public final String fileName;   //file a requester wants to download
     public final long downloaded;

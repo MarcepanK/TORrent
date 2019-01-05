@@ -1,3 +1,5 @@
+import common.Connection;
+
 import java.io.IOException;
 import java.net.Socket;
 import java.util.logging.Logger;
@@ -9,20 +11,14 @@ public class Client {
 
     private int id;
     private Connection trackerConnection;
-    private FileTransferServiceContainer fileTransferServiceContainer;
     private CommandProcessor commandProcessor;
-    private ResponseProcessor responseProcessor;
-    private ResponseHandler responseHandler;
     private ClientConsole console;
 
 
     public Client(int id) {
         this.id = id;
         initTrackerConnection();
-        fileTransferServiceContainer = new FileTransferServiceContainer();
-        commandProcessor = new CommandProcessor(trackerConnection, fileTransferServiceContainer);
-        responseProcessor = new ResponseProcessor(fileTransferServiceContainer);
-        responseHandler = new ResponseHandler(trackerConnection, responseProcessor);
+        commandProcessor = new CommandProcessor(trackerConnection);
         console = new ClientConsole(commandProcessor);
     }
 

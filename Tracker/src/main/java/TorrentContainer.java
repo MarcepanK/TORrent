@@ -1,3 +1,6 @@
+import common.ClientMetadata;
+import common.FileMetadata;
+
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -13,16 +16,16 @@ public class TorrentContainer {
     }
 
     /**
-     * Invoked when new client connects to tracker.
+     * <p>Invoked when new client connects to tracker.</p>
      * Checks if file owned by new client is already tracked (other clients may have it)
      * if (true) -> adds new peer(new client) to already tracked torrent
      * if (false) -> creates new tracked torrent and ads new client as it's peer
      *
      * @param clientMetadata newly connected client metadata(InetSocketAddress and id)
-     * @param files FileMetadata of files owned by newly connected client
+     * @param ownedFiles FileMetadata of files owned by newly connected client
      */
-    public void onClientConnected(ClientMetadata clientMetadata, FileMetadata[] files) {
-        for (FileMetadata fileMetadata : files) {
+    public void onClientConnected(ClientMetadata clientMetadata, FileMetadata[] ownedFiles) {
+        for (FileMetadata fileMetadata : ownedFiles) {
             Optional<TrackedTorrent> torrent = getTrackedTorrentByFileName(fileMetadata.name);
             if (torrent.isPresent()) {
                 torrent.get().addPeer(new TrackedPeer(clientMetadata));
@@ -35,9 +38,9 @@ public class TorrentContainer {
     }
 
     /**
-     * Invoked when client disconnects
-     * Iterates through all tracked torrents and checks if client
-     * that disconnected was peer of said torrent
+     * <p>Invoked when client disconnects</p>
+     * <p>Iterates through all tracked torrents and checks if client
+     * that disconnected was peer of said torrent</p>
      * if (true) -> removes peer and checks if torrent has any peer (if not removes torrent)
      *
      * @param clientId id of a client that disconnected from tracker
@@ -60,6 +63,12 @@ public class TorrentContainer {
         }
     }
 
+    /**
+     * <p>Searches and returns Optional of tracked torrent by given file name</p>
+     *
+     * @param fileName name of a file that torrent is tracking
+     * @return Optional of TrackedTorrent
+     */
     public Optional<TrackedTorrent> getTrackedTorrentByFileName(String fileName) {
         for (TrackedTorrent torrent : trackedTorrents) {
             if (torrent.fileMetadata.name.equals(fileName)) {

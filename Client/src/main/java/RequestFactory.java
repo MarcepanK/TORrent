@@ -19,7 +19,7 @@ public class RequestFactory {
     public Request getRequest(String requestStr) {
         String[] args = requestStr.split("\\s+");
         String requestCodeArg = args[0].toLowerCase();
-        switch(requestCodeArg) {
+        switch (requestCodeArg) {
             case "disconnect": return getDisconnectRequest();
             case "files":      return getFileListRequest();
             case "pull":       return getPullRequest(Arrays.copyOfRange(args, 1, args.length));
@@ -49,19 +49,19 @@ public class RequestFactory {
      * @return {@link PullRequest}
      */
     private PullRequest getPullRequest(String[] args) {
-       if (args.length == 2) {
-           if (args[1].matches("[0-9]+")) {
-               String fileName = args[0];
-               long downloaded = Long.parseLong(args[1]);
-               return new PullRequest(clientId, RequestCode.PULL, fileName, downloaded);
-           }
-       }
-       return new PullRequest(clientId, RequestCode.UNKNOWN, null, 0);
+        if (args.length == 2) {
+            if (args[1].matches("[0-9]+")) {
+                String fileName = args[0];
+                long downloaded = Long.parseLong(args[1]);
+                return new PullRequest(clientId, RequestCode.PULL, fileName, downloaded);
+            }
+        }
+        return new PullRequest(clientId, RequestCode.UNKNOWN, null, 0);
     }
 
     private PushRequest getPushRequest(String[] args) {
         if (args.length == 2) {
-            if(args[0].matches("[0-9]+")) {
+            if (args[0].matches("[0-9]+")) {
                 int destinationHostId = Integer.parseInt(args[0]);
                 String fileName = args[1];
                 return new PushRequest(clientId, RequestCode.PUSH, destinationHostId, fileName);

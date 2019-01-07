@@ -24,14 +24,14 @@ public class TrackedTorrentTest {
     public void TrackedTorrent_Creation() {
         assertTrue(torrent.hasAnyPeer());
         assertEquals(torrent.fileMetadata, fileMetadata);
-        assertTrue(torrent.getPeerById(peerA.id).isPresent());
+        assertTrue(torrent.getPeerById(peerA.clientMetadata.id).isPresent());
     }
 
     @Test
     public void TrackedTorrent_RemovePeer_singlePeer() {
-        torrent.removePeer(peerA.id);
+        torrent.removePeer(peerA.clientMetadata.id);
 
-        assertFalse(torrent.getPeerById(peerA.id).isPresent());
+        assertFalse(torrent.getPeerById(peerA.clientMetadata.id).isPresent());
         assertFalse(torrent.hasAnyPeer());
     }
 
@@ -40,8 +40,8 @@ public class TrackedTorrentTest {
         torrent.addPeer(peerB);
 
         assertTrue(torrent.hasAnyPeer());
-        assertTrue(torrent.getPeerById(peerA.id).isPresent());
-        assertTrue(torrent.getPeerById(peerB.id).isPresent());
+        assertTrue(torrent.getPeerById(peerA.clientMetadata.id).isPresent());
+        assertTrue(torrent.getPeerById(peerB.clientMetadata.id).isPresent());
     }
 
     @Test
@@ -49,8 +49,8 @@ public class TrackedTorrentTest {
         torrent.addPeer(peerB);
         torrent.removePeer(peerA);
 
-        assertFalse(torrent.getPeerById(peerA.id).isPresent());
-        assertTrue(torrent.getPeerById(peerB.id).isPresent());
+        assertFalse(torrent.getPeerById(peerA.clientMetadata.id).isPresent());
+        assertTrue(torrent.getPeerById(peerB.clientMetadata.id).isPresent());
         assertTrue(torrent.hasAnyPeer());
     }
 
@@ -60,8 +60,8 @@ public class TrackedTorrentTest {
         torrent.removePeer(peerA);
         torrent.removePeer(peerB);
 
-        assertFalse(torrent.getPeerById(peerA.id).isPresent());
-        assertFalse(torrent.getPeerById(peerB.id).isPresent());
+        assertFalse(torrent.getPeerById(peerA.clientMetadata.id).isPresent());
+        assertFalse(torrent.getPeerById(peerB.clientMetadata.id).isPresent());
         assertFalse(torrent.hasAnyPeer());
     }
 

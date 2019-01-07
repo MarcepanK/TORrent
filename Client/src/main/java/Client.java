@@ -18,7 +18,7 @@ public class Client {
     public Client(int id) {
         this.id = id;
         initTrackerConnection();
-        commandProcessor = new CommandProcessor(trackerConnection);
+        commandProcessor = new CommandProcessor(id, trackerConnection);
         console = new ClientConsole(commandProcessor);
     }
 

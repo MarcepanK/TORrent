@@ -62,7 +62,6 @@ public class OrderFactory {
      * Returns {@link DownloadOrder} to client that sent request with Pull {@link request.RequestCode}
      * Searches for all peers that are capable of sending requested file and places their {@link ClientMetadata}
      * in {@link DownloadOrder}
-     *
      * @param pullRequest {@link PullRequest} that has been received
      * @return {@link DownloadOrder}
      */

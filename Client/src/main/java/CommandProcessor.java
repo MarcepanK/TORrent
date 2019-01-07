@@ -19,10 +19,18 @@ public class CommandProcessor {
 
     private void processRequestCommand(String requestArgs) {
         Request request = requestFactory.getRequest(requestArgs);
-        trackerConnection.send(request);
+        if (request.requestCode != RequestCode.UNKNOWN) {
+            trackerConnection.send(request);
+            logger.info(String.format("Request with code %s has been sent to tracker", request.requestCode.toString()));
+        }
     }
 
     private void processListCommand(String listCommandArg) {
+        if (listCommandArg.equals("files")) {
+
+        } else if (listCommandArg.equals("transfers")) {
+
+        }
     }
 
     //FIXME

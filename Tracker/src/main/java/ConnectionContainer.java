@@ -35,11 +35,15 @@ public class ConnectionContainer {
      *
      * @param clientId id of a client that wants to disconnect from tracker
      */
-    public void onClientDisconnected(final int clientId) {
-        Connection conn = connections.get(clientId);
-        conn.close();
-        connections.remove(clientId, conn);
-        logger.info(String.format("common.common.Connection with id: %d has been closed", clientId));
+    public void onClientDisconnected(int clientId) {
+        connections.get(clientId).close();
+        connections.remove(clientId);
+        logger.info(String.format("Connection to client with id: %d has been closed and removed", clientId));
+        if (connections.containsKey(clientId)) {
+            connections.get(clientId).close();
+            connections.remove(clientId);
+            logger.info(String.format("Connection to client with id: %d has beend closed and removed", clientId));
+        }
     }
 
     public Optional<Connection> getConnectionById(int clientId) {

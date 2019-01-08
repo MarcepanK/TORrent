@@ -22,6 +22,10 @@ public class RequestFactory {
         }
     }
 
+    public static UpdateRequest getUpdateRequest(int clientId, long downloaded, long uploaded, String fileName) {
+        return new UpdateRequest(clientId, RequestCode.UPDATE, downloaded, uploaded, fileName);
+    }
+
     /**
      * @return {@link Request} with Disconnect {@link RequestCode}
      */

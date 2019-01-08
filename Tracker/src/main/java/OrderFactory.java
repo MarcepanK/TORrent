@@ -20,17 +20,20 @@ public class OrderFactory {
      * @param request {@link PullRequest} request that has been received
      * @return {@link ArrayList<UploadOrder>}
      */
-    public static ArrayList<UploadOrder> getUploadOrders(TorrentContainer torrentContainer, PullRequest request) {
-        ArrayList<UploadOrder> uploadOrders = new ArrayList<>();
+    public static UploadOrder[] getUploadOrders(TorrentContainer torrentContainer, PullRequest request) {
         Optional<TrackedTorrent> torrent = torrentContainer.getTrackedTorrentByFileName(request.fileName);
         if (torrent.isPresent()) {
             TrackedPeer[] seeds = torrent.get().getPeersWithCompleteFile();
+            UploadOrder[] uploadOrders = new UploadOrder[seeds.length];
+            System.out.println("seeds: " + seeds.length);
             for(int i=0; i<seeds.length; i++) {
-                uploadOrders.add(new UploadOrder(torrent.get().fileMetadata, seeds[i].clientMetadata, i+1, seeds.length));
+                System.out.println("added upload order for id: %d" + seeds[i].clientMetadata.id);
+                uploadOrders[i] = new UploadOrder(torrent.get().fileMetadata, request.requesterId, i+1, seeds.length);
             }
+            System.out.println("Upload orders len: " + uploadOrders.length);
+            return uploadOrders;
         }
-        uploadOrders.trimToSize();
-        return uploadOrders;
+        return null;
     }
 
     /**
@@ -43,7 +46,7 @@ public class OrderFactory {
         if (torrent.isPresent()) {
             Optional<TrackedPeer> peer = torrent.get().getPeerById(request.requesterId);
             if (peer.isPresent()) {
-                return new UploadOrder(torrent.get().fileMetadata, peer.get().clientMetadata, 1, 1);
+                return new UploadOrder(torrent.get().fileMetadata, request.destinationHostId, 1, 1);
             }
         }
         return null;
@@ -60,14 +63,13 @@ public class OrderFactory {
         ArrayList<ClientMetadata> seedsMetadata = new ArrayList<>();
         Optional<TrackedTorrent> torrent = torrentContainer.getTrackedTorrentByFileName(pullRequest.fileName);
         if (torrent.isPresent()) {
-            TrackedPeer[] peers = torrent.get().getAllPeers();
+            TrackedPeer[] peers = torrent.get().getPeersWithCompleteFile();
             for (TrackedPeer peer : peers) {
-                if (peer.getLeft() == 0) {
-                    seedsMetadata.add(peer.clientMetadata);
-                }
+                seedsMetadata.add(peer.clientMetadata);
             }
+            return new DownloadOrder(torrent.get().fileMetadata, seedsMetadata.toArray(new ClientMetadata[0]));
         }
-        return new DownloadOrder(torrent.get().fileMetadata,(ClientMetadata[])seedsMetadata.toArray());
+        return null;
     }
 
     /**

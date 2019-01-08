@@ -1,20 +1,17 @@
 import common.ClientHandshake;
 import common.Connection;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.logging.Logger;
 
 public class Client {
 
     private static final Logger logger = Logger.getLogger(Client.class.getName());
-    private static final String DEFAULT_PATH = "D:/TORrent_";
+    public static final String DEFAULT_PATH_PREFIX = "D:/TORrent_";
 
     private int id;
-    private String directoryPath;
+    private FileRepository fileRepository;
     private Connection trackerConnection;
     private TrackerListener trackerListener;
     private CommandProcessor commandProcessor;
@@ -23,10 +20,10 @@ public class Client {
 
     public Client(int id) {
         this.id = id;
-        directoryPath = DEFAULT_PATH + id;
+        fileRepository = new FileRepository(DEFAULT_PATH_PREFIX + id);
         initTrackerConnection();
         trackerListener = new TrackerListener(trackerConnection);
-        commandProcessor = new CommandProcessor(id, trackerConnection);
+        commandProcessor = new CommandProcessor(id, trackerConnection, fileRepository);
         console = new ClientConsole(commandProcessor);
     }
 
@@ -35,34 +32,15 @@ public class Client {
             logger.info("Initializing connection to tracker");
             Socket sock = new Socket("localhost", Tracker.TRACKER_PORT);
             trackerConnection = new Connection(sock);
-            logger.info("Connecting to tracker");
-            ClientHandshake handshake = generateHandshake();
-            logger.info("Sending handshake");
-            if (handshake != null) {
-                trackerConnection.send(generateHandshake());
-            }
+            ClientHandshake handshake = new ClientHandshake(id, fileRepository.getAllFilesMetadata());
+            trackerConnection.send(handshake);
+            logger.info("Handshake sent");
         } catch (IOException e) {
             logger.severe("Unable to connect to tracker.\nQuitting");
             System.exit(1);
         }
     }
 
-    private ClientHandshake generateHandshake() {
-        logger.info("Generating handshake");
-        File directory = new File(directoryPath);
-        if (directory.exists()) {
-            return new ClientHandshake(id, directory.listFiles());
-        } else {
-            try {
-                Files.createDirectory(Paths.get(directoryPath));
-                return new ClientHandshake(id, directory.listFiles());
-            } catch (Exception e) {
-                logger.severe("Unable to create directory");
-                System.exit(1);
-            }
-        }
-        return null;
-    }
 
     public void launch() {
         Thread t1 = new Thread(console);

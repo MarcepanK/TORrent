@@ -1,4 +1,5 @@
 import common.Connection;
+import common.FileMetadata;
 import request.*;
 
 import java.util.logging.Logger;
@@ -9,10 +10,12 @@ public class CommandProcessor {
 
     private int clientId;
     private Connection trackerConnection;
+    private FileRepository fileRepository;
 
-    public CommandProcessor(int clientId, Connection trackerConnection) {
+    public CommandProcessor(int clientId, Connection trackerConnection, FileRepository fileRepository) {
         this.clientId = clientId;
         this.trackerConnection = trackerConnection;
+        this.fileRepository = fileRepository;
     }
 
     private void processRequestCommand(String requestArgs) {
@@ -28,7 +31,10 @@ public class CommandProcessor {
 
     private void processListCommand(String listCommandArg) {
         if (listCommandArg.equals("files")) {
-
+            FileMetadata[] ownedFiles = fileRepository.getAllFilesMetadata();
+            for (FileMetadata metadata : ownedFiles) {
+                System.out.println(metadata);
+            }
         } else if (listCommandArg.equals("transfers")) {
 
         }

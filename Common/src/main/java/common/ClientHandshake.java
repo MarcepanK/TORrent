@@ -6,13 +6,18 @@ import java.io.Serializable;
 public class ClientHandshake implements Serializable {
 
     public final int id;
-    public final FileMetadata[] ownedFiles;
+    public final FileMetadata[] ownedFilesMetadata;
 
     public ClientHandshake(int id, File[] files) {
         this.id = id;
-        ownedFiles = new FileMetadata[files.length];
+        ownedFilesMetadata = new FileMetadata[files.length];
         for(int i=0; i<files.length; i++) {
-            ownedFiles[i] = new FileMetadata(files[i]);
+            ownedFilesMetadata[i] = new FileMetadata(files[i]);
         }
+    }
+
+    public ClientHandshake(int id, FileMetadata[] ownedFilesMetadata) {
+        this.id = id;
+        this.ownedFilesMetadata = ownedFilesMetadata;
     }
 }

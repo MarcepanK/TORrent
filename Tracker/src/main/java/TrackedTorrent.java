@@ -73,7 +73,7 @@ public class TrackedTorrent {
     }
 
     public TrackedPeer[] getAllPeers() {
-        return peers.toArray(new TrackedPeer[peers.size()]);
+        return peers.toArray(new TrackedPeer[0]);
     }
 
     public TrackedPeer[] getPeersWithCompleteFile() {
@@ -84,6 +84,6 @@ public class TrackedTorrent {
                 seeds.add(peer);
             }
         }
-        return (TrackedPeer[]) seeds.toArray();
+        return seeds.toArray(new TrackedPeer[0]);
     }
 }

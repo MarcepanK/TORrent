@@ -1,9 +1,10 @@
-import common.Connection;
+import common.FileMetadata;
 
-public abstract class FileTransferService {
-    Connection connection;
+public abstract class FileTransferService implements Runnable {
 
-    public FileTransferService(Connection connection) {
-        this.connection = connection;
+    public final FileMetadata transferredFileMetadata;
+
+    public FileTransferService(FileMetadata transferredFileMetadata) {
+        this.transferredFileMetadata = transferredFileMetadata;
     }
 }

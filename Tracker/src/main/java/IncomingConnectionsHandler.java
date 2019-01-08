@@ -46,7 +46,7 @@ public class IncomingConnectionsHandler implements Runnable {
                 ClientHandshake handshake = (ClientHandshake) received;
                 InetSocketAddress sockAddress = (InetSocketAddress)socket.getRemoteSocketAddress();
                 ClientMetadata clientMetadata = new ClientMetadata(handshake.id, sockAddress);
-                torrentContainer.onClientConnected(clientMetadata, handshake.ownedFiles);
+                torrentContainer.onClientConnected(clientMetadata, handshake.ownedFilesMetadata);
                 connectionContainer.onClientConnected(clientMetadata.id, newConnection);
                 logger.info(String.format("Received handshake from: id: %d | address: %s | port: %d",
                         clientMetadata.id, clientMetadata.address.getAddress(), clientMetadata.address.getPort()));

@@ -20,46 +20,59 @@ public class OrderSender {
         this.connectionContainer = connectionContainer;
     }
 
-    public void sendOutOrders(DownloadOrder downloadOrder, ArrayList<UploadOrder> uploadOrders) {
+    public void sendOutOrders(DownloadOrder downloadOrder, UploadOrder[] uploadOrders) {
         if (ordersValid(uploadOrders) && orderValid(downloadOrder)) {
-           connectionContainer.getConnectionById(uploadOrders.get(0).leech.id).get().send(downloadOrder);
+           connectionContainer.getConnectionById(uploadOrders[0].leechId).get().send(downloadOrder);
            for (int seedIdx = 0; seedIdx < downloadOrder.seeds.length; seedIdx++) {
-               connectionContainer.getConnectionById(downloadOrder.seeds[seedIdx].id).get().send(uploadOrders.get(seedIdx));
+
+               connectionContainer.getConnectionById(downloadOrder.seeds[seedIdx].id).get().send(uploadOrders[seedIdx]);
            }
         }
     }
 
     public void sendOutOrders(DownloadOrder downloadOrder, UploadOrder uploadOrder) {
         if (orderValid(downloadOrder) && orderValid(uploadOrder)) {
-            connectionContainer.getConnectionById(uploadOrder.leech.id).get().send(downloadOrder);
+            connectionContainer.getConnectionById(uploadOrder.leechId).get().send(downloadOrder);
             connectionContainer.getConnectionById(downloadOrder.seeds[0].id).get().send(uploadOrder);
         }
     }
 
-    private boolean ordersValid(ArrayList<UploadOrder> orders) {
-        int orderCount = orders.size();
-        ClientMetadata leech = orders.get(0).leech;
-        FileMetadata orderedFileMetadata = orders.get(0).orderedFileMetadata;
-        for (int orderNo = 0; orderNo < orderCount; orderCount++) {
-            UploadOrder currentOrder = orders.get(orderNo);
-            if (currentOrder.filePartToSend != orderNo + 1 ||
-                    currentOrder.totalParts != orderCount ||
-                    currentOrder.leech != leech ||
-                    currentOrder.orderedFileMetadata != orderedFileMetadata) {
-                logger.warning("UploadOrder not valid");
+    private boolean ordersValid(UploadOrder[] orders) {
+        int orderCount = orders.length;
+        int leechId = orders[0].leechId;
+        FileMetadata orderedFileMetadata = orders[0].orderedFileMetadata;
+        for (int orderNo = 0; orderNo < orderCount; orderNo++) {
+            UploadOrder currentOrder = orders[orderNo];
+            if (currentOrder.filePartToSend != orderNo + 1) {
+                logger.warning("wring file part to send");
+                return false;
+            } else if (currentOrder.totalParts != orderCount) {
+                logger.warning(String.format("wrong total parts | total parts: %d  | order count: %d", currentOrder.totalParts, orderCount));
+                return false;
+            } else if (currentOrder.leechId != leechId) {
+                logger.warning("wrong leech");
+                return false;
+            } else if (currentOrder.orderedFileMetadata != orderedFileMetadata) {
+                logger.warning("wrong file metadata");
                 return false;
             }
+//            if (currentOrder.filePartToSend != orderNo + 1 ||
+//                    currentOrder.totalParts != orderCount ||
+//                    currentOrder.leech != leech ||
+//                    currentOrder.orderedFileMetadata != orderedFileMetadata) {
+//                logger.warning("UploadOrder not valid");
+//                return false;
+//            }
         }
-        return connectionContainer.getConnectionById(leech.id).isPresent();
+        return connectionContainer.getConnectionById(leechId).isPresent();
     }
 
     private boolean orderValid(UploadOrder order) {
-        ClientMetadata leech = order.leech;
-        if (order.totalParts != 0 || order.filePartToSend != 1) {
-            logger.warning("Upload order not valid");
+        if (order.totalParts != 1 || order.filePartToSend != 1) {
+            logger.warning("Upload order not valid | ");
             return false;
         }
-        return connectionContainer.getConnectionById(leech.id).isPresent();
+        return connectionContainer.getConnectionById(order.leechId).isPresent();
     }
 
     private boolean orderValid(DownloadOrder order) {

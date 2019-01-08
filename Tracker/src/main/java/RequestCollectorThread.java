@@ -18,18 +18,18 @@ public class RequestCollectorThread extends Thread {
 
     @Override
     public void run() {
-        while(running) {
+        while (running) {
             if (connection.getSocket().isConnected()) {
                 Object recv = connection.receive();
-                if (recv != null) {
-                    if (recv instanceof Request) {
-                        Request request = (Request) recv;
-                        requestBuffer.add(request);
-                        if (request.requestCode == RequestCode.DISCONNECT) {
-                            running = false;
-                        }
+                if (recv instanceof Request) {
+                    Request request = (Request) recv;
+                    requestBuffer.add(request);
+                    if (request.requestCode == RequestCode.DISCONNECT) {
+                        running = false;
                     }
                 }
+            } else {
+                running = false;
             }
         }
     }

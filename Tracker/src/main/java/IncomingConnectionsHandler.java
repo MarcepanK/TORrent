@@ -38,7 +38,7 @@ public class IncomingConnectionsHandler implements Runnable {
      * @param socket
      */
     private void handleNewConnection(Socket socket) {
-        new Thread(() ->{
+        new Thread(() -> {
             logger.info("Handling new connection");
             Connection newConnection = new Connection(socket);
             Object received = newConnection.receive();

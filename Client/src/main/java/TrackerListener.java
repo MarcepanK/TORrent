@@ -1,11 +1,7 @@
 import common.Connection;
 import common.FileMetadata;
 
-import java.util.logging.Logger;
-
 public class TrackerListener implements Runnable {
-
-    private static final Logger logger = Logger.getLogger(TrackerListener.class.getName());
 
     private Connection trackerConnection;
 

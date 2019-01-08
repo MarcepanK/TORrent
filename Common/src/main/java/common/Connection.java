@@ -38,7 +38,6 @@ public class Connection {
 
     public void send(Object data) {
         try {
-            System.out.println("sending: " + data.toString());
             outputStream.writeObject(data);
             outputStream.flush();
         } catch (Exception e) {
@@ -48,9 +47,7 @@ public class Connection {
 
     public Object receive() {
         try {
-            Object recv = inputStream.readObject();
-            System.out.println("Received: " + recv.toString());
-            return recv;
+            return inputStream.readObject();
         } catch (Exception e) {
             e.printStackTrace();
             return null;

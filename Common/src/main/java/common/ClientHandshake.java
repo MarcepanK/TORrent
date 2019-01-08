@@ -15,9 +15,4 @@ public class ClientHandshake implements Serializable {
             ownedFiles[i] = new FileMetadata(files[i]);
         }
     }
-
-    public ClientHandshake(int id, FileMetadata[] files) {
-        this.id = id;
-        ownedFiles = files;
-    }
 }

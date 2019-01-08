@@ -14,44 +14,55 @@ public class IncomingConnectionsHandler implements Runnable {
     private ServerSocket serverSocket;
     private ConnectionContainer connectionContainer;
     private TorrentContainer torrentContainer;
+    private IncomingRequestsHandler incomingRequestsHandler;
 
-    public IncomingConnectionsHandler(ConnectionContainer connectionContainer,
-                                      TorrentContainer torrentContainer) {
-        try {
-            serverSocket = new ServerSocket(Tracker.TRACKER_PORT);
-        } catch (Exception e) {
-            logger.severe("Unable to create Sever Socket");
-            e.printStackTrace();
-        }
+    public IncomingConnectionsHandler(ConnectionContainer connectionContainer, TorrentContainer torrentContainer,
+                                      IncomingRequestsHandler incomingRequestsHandler) {
         this.connectionContainer = connectionContainer;
         this.torrentContainer = torrentContainer;
+        this.incomingRequestsHandler = incomingRequestsHandler;
+        createServerSocket();
+    }
+
+    private void createServerSocket() {
+        try {
+            serverSocket = new ServerSocket(Tracker.TRACKER_PORT);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * Invoked when client connects to serverSocket.
-     * Awaits for client to send a Handshake
-     * @see ClientHandshake
-     *
+     * Awaits for client to send a {@link ClientHandshake}
      * @param socket
      */
     private void handleNewConnection(Socket socket) {
-        Connection newConnection = new Connection(socket);
-        Object received = newConnection.receive();
-        if(received instanceof ClientHandshake) {
-            ClientHandshake handshake = (ClientHandshake) received;
-            InetSocketAddress sockAddress = (InetSocketAddress)socket.getRemoteSocketAddress();
-            ClientMetadata clientMetadata = new ClientMetadata(handshake.id, sockAddress);
-            torrentContainer.onClientConnected(clientMetadata, handshake.ownedFiles);
-            connectionContainer.onClientConnected(clientMetadata, newConnection);
-            logger.info(String.format("Received handshake from: id: %d | address: %s | port: %d",
-                    clientMetadata.id, clientMetadata.address.getAddress(), clientMetadata.id));
-        }
+        new Thread(() ->{
+            logger.info("Handling new connection");
+            Connection newConnection = new Connection(socket);
+            Object received = newConnection.receive();
+            if(received instanceof ClientHandshake) {
+                ClientHandshake handshake = (ClientHandshake) received;
+                InetSocketAddress sockAddress = (InetSocketAddress)socket.getRemoteSocketAddress();
+                ClientMetadata clientMetadata = new ClientMetadata(handshake.id, sockAddress);
+                torrentContainer.onClientConnected(clientMetadata, handshake.ownedFiles);
+                connectionContainer.onClientConnected(clientMetadata.id, newConnection);
+                logger.info(String.format("Received handshake from: id: %d | address: %s | port: %d",
+                        clientMetadata.id, clientMetadata.address.getAddress(), clientMetadata.address.getPort()));
+                connectionContainer.getConnectionById(clientMetadata.id).ifPresent(connection-> connection.send("Hello"));
+                incomingRequestsHandler.addNewRequestCollectorThread(newConnection);
+            }
+        }).start();
     }
 
     @Override
     public void run() {
         try {
-            handleNewConnection(serverSocket.accept());
+            while(true) {
+                handleNewConnection(serverSocket.accept());
+                Thread.sleep(1000);
+            }
         } catch (Exception e) {
             logger.warning("Failed while running serverSocket");
             e.printStackTrace();

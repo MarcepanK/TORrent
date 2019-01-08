@@ -9,18 +9,19 @@ public class CommandProcessor {
 
     private int clientId;
     private Connection trackerConnection;
-    private RequestFactory requestFactory;
 
     public CommandProcessor(int clientId, Connection trackerConnection) {
         this.clientId = clientId;
         this.trackerConnection = trackerConnection;
-        requestFactory = new RequestFactory(clientId);
     }
 
     private void processRequestCommand(String requestArgs) {
-        Request request = requestFactory.getRequest(requestArgs);
+        Request request = RequestFactory.getRequest(clientId, requestArgs);
         if (request.requestCode != RequestCode.UNKNOWN) {
             trackerConnection.send(request);
+            if (request.requestCode == RequestCode.DISCONNECT) {
+                System.exit(1);
+            }
             logger.info(String.format("Request with code %s has been sent to tracker", request.requestCode.toString()));
         }
     }

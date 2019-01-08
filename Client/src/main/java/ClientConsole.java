@@ -10,7 +10,9 @@ public class ClientConsole implements Runnable {
 
     @Override
     public void run() {
-        Scanner userInput  = new Scanner(System.in);
-        commandProcessor.processCommand(userInput.nextLine());
+        while (true) {
+            Scanner userInput = new Scanner(System.in);
+            commandProcessor.processCommand(userInput.nextLine());
+        }
     }
 }

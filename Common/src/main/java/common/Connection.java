@@ -17,8 +17,8 @@ public class Connection {
 
     private void setupStreams() {
         try {
-            inputStream = new ObjectInputStream(socket.getInputStream());
             outputStream = new ObjectOutputStream(socket.getOutputStream());
+            inputStream = new ObjectInputStream(socket.getInputStream());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -28,7 +28,9 @@ public class Connection {
         try {
             inputStream.close();
             outputStream.close();
-            socket.close();
+            if (socket.isConnected()) {
+                socket.close();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -36,6 +38,7 @@ public class Connection {
 
     public void send(Object data) {
         try {
+            System.out.println("sending: " + data.toString());
             outputStream.writeObject(data);
             outputStream.flush();
         } catch (Exception e) {
@@ -45,10 +48,16 @@ public class Connection {
 
     public Object receive() {
         try {
-            return inputStream.readObject();
+            Object recv = inputStream.readObject();
+            System.out.println("Received: " + recv.toString());
+            return recv;
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
+    }
+
+    public Socket getSocket() {
+        return socket;
     }
 }

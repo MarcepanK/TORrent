@@ -34,4 +34,10 @@ public class FileMetadata implements Serializable {
         }
         return null;
     }
+
+    @Override
+    public String toString() {
+        return String.format("File name: %s | file len: %d | md5: %s", name, size, md5sum);
+    }
+
 }

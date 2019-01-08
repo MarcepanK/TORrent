@@ -64,8 +64,7 @@ public class TorrentContainer {
     }
 
     /**
-     * <p>Searches and returns Optional of tracked torrent by given file name</p>
-     *
+     * Searches and returns Optional of tracked torrent by given file name
      * @param fileName name of a file that torrent is tracking
      * @return Optional of TrackedTorrent
      */

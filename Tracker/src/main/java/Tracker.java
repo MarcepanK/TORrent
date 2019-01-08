@@ -8,26 +8,23 @@ public class Tracker {
 
     private TorrentContainer torrentContainer;
     private ConnectionContainer connectionContainer;
-    private IncomingConnectionsHandler incomingConnectionsHandler;
     private RequestProcessor requestProcessor;
     private IncomingRequestsHandler incomingRequestsHandler;
+    private IncomingConnectionsHandler incomingConnectionsHandler;
 
     public Tracker() {
         torrentContainer = new TorrentContainer();
         connectionContainer = new ConnectionContainer();
-        incomingConnectionsHandler = new IncomingConnectionsHandler(connectionContainer, torrentContainer);
         requestProcessor = new RequestProcessor(connectionContainer, torrentContainer);
-        incomingRequestsHandler = new IncomingRequestsHandler(connectionContainer, requestProcessor);
+        incomingRequestsHandler = new IncomingRequestsHandler(requestProcessor);
+        incomingConnectionsHandler = new IncomingConnectionsHandler(connectionContainer, torrentContainer,
+                incomingRequestsHandler);
     }
 
     public void launch() {
         Thread t1 = new Thread(incomingConnectionsHandler);
         Thread t2 = new Thread(incomingRequestsHandler);
-        while(true) {
-            t1.run();
-            logger.info("t1 running");
-            t2.run();
-            logger.info("t2 running");
-        }
+        t1.start();
+        t2.start();
     }
 }

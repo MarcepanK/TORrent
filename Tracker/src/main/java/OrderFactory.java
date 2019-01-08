@@ -1,5 +1,4 @@
 import common.ClientMetadata;
-import common.FileMetadata;
 import order.DownloadOrder;
 import order.UploadOrder;
 import request.PullRequest;
@@ -14,21 +13,14 @@ import java.util.Optional;
  */
 public class OrderFactory {
 
-    private TorrentContainer torrentContainer;
-
-    public OrderFactory(TorrentContainer torrentContainer) {
-        this.torrentContainer = torrentContainer;
-    }
-
     /**
      * Searches for all {@link TrackedPeer} that have requested file
      * and returns Array of {@link UploadOrder} that will be sent
      * to those peers
-     *
      * @param request {@link PullRequest} request that has been received
      * @return {@link ArrayList<UploadOrder>}
      */
-    public ArrayList<UploadOrder> getUploadOrders(PullRequest request) {
+    public static ArrayList<UploadOrder> getUploadOrders(TorrentContainer torrentContainer, PullRequest request) {
         ArrayList<UploadOrder> uploadOrders = new ArrayList<>();
         Optional<TrackedTorrent> torrent = torrentContainer.getTrackedTorrentByFileName(request.fileName);
         if (torrent.isPresent()) {
@@ -43,11 +35,10 @@ public class OrderFactory {
 
     /**
      * Returns {@link UploadOrder} to client that sent request
-     *
      * @param request {@link PushRequest} that has been received
      * @return {@link UploadOrder}
      */
-    public UploadOrder getUploadOrder(PushRequest request) {
+    public static UploadOrder getUploadOrder(TorrentContainer torrentContainer, PushRequest request) {
         Optional<TrackedTorrent> torrent = torrentContainer.getTrackedTorrentByFileName(request.fileName);
         if (torrent.isPresent()) {
             Optional<TrackedPeer> peer = torrent.get().getPeerById(request.requesterId);
@@ -65,7 +56,7 @@ public class OrderFactory {
      * @param pullRequest {@link PullRequest} that has been received
      * @return {@link DownloadOrder}
      */
-    public DownloadOrder getDownloadOrder(PullRequest pullRequest) {
+    public static DownloadOrder getDownloadOrder(TorrentContainer torrentContainer, PullRequest pullRequest) {
         ArrayList<ClientMetadata> seedsMetadata = new ArrayList<>();
         Optional<TrackedTorrent> torrent = torrentContainer.getTrackedTorrentByFileName(pullRequest.fileName);
         if (torrent.isPresent()) {
@@ -81,11 +72,10 @@ public class OrderFactory {
 
     /**
      * Returns {@link DownloadOrder} with single {@link ClientMetadata} of client that sent {@link PushRequest}
-     *
      * @param pushRequest {@link PushRequest} that has been received
      * @return {@link DownloadOrder}
      */
-    public DownloadOrder getDownloadOrder(PushRequest pushRequest) {
+    public static DownloadOrder getDownloadOrder(TorrentContainer torrentContainer, PushRequest pushRequest) {
         Optional<TrackedTorrent> torrent = torrentContainer.getTrackedTorrentByFileName(pushRequest.fileName);
         if (torrent.isPresent()) {
             Optional<TrackedPeer> peer = torrent.get().getPeerById(pushRequest.requesterId);

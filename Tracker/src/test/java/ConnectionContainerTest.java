@@ -44,8 +44,8 @@ public class ConnectionContainerTest {
 
     @Test
     public void ConnectionContainer_OnClientConnected_SingleClient() {
-        container.onClientConnected(clientA, conA);
-        when(container.getConnectionById(clientA.id)).thenReturn(Optional.of(conA));
+        container.onClientConnected(clientA.id, conA);
+
         assertFalse(container.getConnections().isEmpty());
         assertTrue(container.getConnectionById(clientA.id).isPresent());
         assertFalse(container.getConnections().isEmpty());
@@ -53,7 +53,7 @@ public class ConnectionContainerTest {
 
     @Test
     public void ConnectionContainer_OnClientDisconnect_SingleClient() {
-        container.onClientConnected(clientA, conA);
+        container.onClientConnected(clientA.id, conA);
         container.onClientDisconnected(clientA.id);
 
         assertFalse(container.getConnectionById(clientA.id).isPresent());
@@ -65,8 +65,8 @@ public class ConnectionContainerTest {
         doNothing().when(conA).close();
         doNothing().when(conB).close();
 
-        container.onClientConnected(clientA, conA);
-        container.onClientConnected(clientB, conB);
+        container.onClientConnected(clientA.id, conA);
+        container.onClientConnected(clientB.id, conB);
 
         container.onClientDisconnected(clientA.id);
         assertFalse(container.getConnectionById(clientA.id).isPresent());

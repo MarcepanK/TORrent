@@ -7,12 +7,11 @@ import static org.junit.Assert.*;
 public class RequestFactoryTest {
 
     private int clientId = 1;
-    private RequestFactory requestFactory = new RequestFactory(clientId);
 
     @Test
     public void RequestFactory_Disconnect_Correct() {
         String requestStr = "disconnect";
-        Request request = requestFactory.getRequest(requestStr);
+        Request request = RequestFactory.getRequest(clientId, requestStr);
 
         assertEquals(request.requesterId, clientId);
         Assert.assertEquals(request.requestCode, RequestCode.DISCONNECT);
@@ -21,7 +20,7 @@ public class RequestFactoryTest {
     @Test
     public void RequestFactory_Update_Correct() {
         String requestStr = "Update 100 1000 halko";
-        UpdateRequest request = (UpdateRequest)requestFactory.getRequest(requestStr);
+        UpdateRequest request = (UpdateRequest)RequestFactory.getRequest(clientId, requestStr);
 
         assertEquals(request.requesterId, clientId);
         assertEquals(request.requestCode, RequestCode.UPDATE);
@@ -33,7 +32,7 @@ public class RequestFactoryTest {
     @Test
     public void RequestFactory_FileList_Correct() {
         String requestStr = "files";
-        Request request = requestFactory.getRequest(requestStr);
+        Request request = RequestFactory.getRequest(clientId, requestStr);
 
         assertEquals(request.requesterId, clientId);
         assertEquals(request.requestCode, RequestCode.FILE_LIST);
@@ -42,7 +41,7 @@ public class RequestFactoryTest {
     @Test
     public void RequestFactory_Pull_Correct() {
         String requestStr = "pull file 1024";
-        PullRequest request = (PullRequest)requestFactory.getRequest(requestStr);
+        PullRequest request = (PullRequest)RequestFactory.getRequest(clientId, requestStr);
 
         assertEquals(request.requesterId, clientId);
         assertEquals(request.requestCode, RequestCode.PULL);
@@ -53,7 +52,7 @@ public class RequestFactoryTest {
     @Test
     public void RequestFactory_Push_Correct() {
         String requestStr = "push 20 file";
-        PushRequest request = (PushRequest)requestFactory.getRequest(requestStr);
+        PushRequest request = (PushRequest)RequestFactory.getRequest(clientId, requestStr);
 
         assertEquals(request.requesterId, clientId);
         assertEquals(request.requestCode, RequestCode.PUSH);
@@ -64,7 +63,7 @@ public class RequestFactoryTest {
     @Test
     public void RequestFactory_Request_Invalid() {
         String requestStr = "tradalksd";
-        Request request = requestFactory.getRequest(requestStr);
+        Request request = RequestFactory.getRequest(clientId, requestStr);
 
         assertEquals(request.requesterId, clientId);
         assertEquals(request.requestCode, RequestCode.UNKNOWN);
@@ -73,7 +72,7 @@ public class RequestFactoryTest {
     @Test
     public void RequestFactory_Update_Invalid() {
         String requestStr = "Update tralala 10 1l2kjjf3";
-        UpdateRequest request = (UpdateRequest) requestFactory.getRequest(requestStr);
+        UpdateRequest request = (UpdateRequest) RequestFactory.getRequest(clientId, requestStr);
 
         assertEquals(request.requesterId, clientId);
         assertEquals(request.requestCode, RequestCode.UNKNOWN);
@@ -85,7 +84,7 @@ public class RequestFactoryTest {
     @Test
     public void RequestFactory_Pull_Invalid() {
         String requestStr = "pull";
-        PullRequest request = (PullRequest) requestFactory.getRequest(requestStr);
+        PullRequest request = (PullRequest) RequestFactory.getRequest(clientId, requestStr);
 
         assertEquals(request.requesterId, clientId);
         assertEquals(request.requestCode, RequestCode.UNKNOWN);
@@ -95,7 +94,7 @@ public class RequestFactoryTest {
     @Test
     public void RequestFactory_Push_Invalid() {
         String requestStr = "push file 123123l";
-        PushRequest request = (PushRequest) requestFactory.getRequest(requestStr);
+        PushRequest request = (PushRequest) RequestFactory.getRequest(clientId, requestStr);
 
         assertEquals(request.requesterId, clientId);
         assertEquals(request.requestCode, RequestCode.UNKNOWN);

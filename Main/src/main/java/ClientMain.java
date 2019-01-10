@@ -5,7 +5,12 @@ public class ClientMain {
         Scanner userInput = new Scanner(System.in);
         System.out.print("Enter host id: ");
         int id = userInput.nextInt();
-        Client client = new Client(id);
-        client.launch();
+       Client client = null;
+       try {
+           client = new Client(id);
+       } catch (Exception e) {
+           e.printStackTrace();
+       }
+       client.launch();
     }
 }

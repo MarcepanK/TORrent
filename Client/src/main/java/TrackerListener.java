@@ -11,8 +11,9 @@ public class TrackerListener implements Runnable {
     private Connection trackerConnection;
     private OrderProcessor orderProcessor;
 
-    public TrackerListener(Connection trackerConnection) {
+    public TrackerListener(Connection trackerConnection, OrderProcessor orderProcessor) {
         this.trackerConnection = trackerConnection;
+        this.orderProcessor = orderProcessor;
     }
 
     @Override
@@ -24,7 +25,11 @@ public class TrackerListener implements Runnable {
                 FileMetadata metadata = (FileMetadata) received;
                 System.out.println(metadata);
             } else if (received instanceof Order) {
-                orderProcessor.processOrder((Order)received);
+                try {
+                    orderProcessor.processOrder((Order)received);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             } else {
                 System.out.println(received);
             }

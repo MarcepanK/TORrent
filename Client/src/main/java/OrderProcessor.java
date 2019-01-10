@@ -6,11 +6,14 @@ public class OrderProcessor {
 
     private int myId;
     private FileRepository fileRepository;
-    Connection trackerConnection;
+    private Connection trackerConnection;
     private TransferServiceContainer transferServiceContainer;
 
-    public OrderProcessor(int myId) {
-
+    public OrderProcessor(int myId, FileRepository fileRepository, Connection trackerConnection, TransferServiceContainer transferServiceContainer) {
+        this.myId = myId;
+        this.fileRepository = fileRepository;
+        this.trackerConnection = trackerConnection;
+        this.transferServiceContainer = transferServiceContainer;
     }
 
     public void processOrder(Order order) throws Exception {
@@ -26,7 +29,7 @@ public class OrderProcessor {
     }
 
     private void handleDownloadOrder(DownloadOrder order) {
-        transferServiceContainer.add(FileTransferServiceFactory.getService(myId, order, fileRepository, trackerConnection));
+        transferServiceContainer.add(FileTransferServiceFactory.getService(myId, order, trackerConnection));
     }
 
 

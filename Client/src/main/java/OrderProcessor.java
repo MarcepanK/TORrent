@@ -13,7 +13,7 @@ public class OrderProcessor {
 
     }
 
-    public void processOrder(Order order) {
+    public void processOrder(Order order) throws Exception {
         if (order instanceof UploadOrder) {
             handleUploadOrder((UploadOrder) order);
         } else if (order instanceof DownloadOrder) {
@@ -21,11 +21,12 @@ public class OrderProcessor {
         }
     }
 
-    private void handleUploadOrder(UploadOrder order) {
+    private void handleUploadOrder(UploadOrder order) throws Exception {
         transferServiceContainer.add(FileTransferServiceFactory.getService(myId, order, fileRepository, trackerConnection));
     }
 
     private void handleDownloadOrder(DownloadOrder order) {
+        transferServiceContainer.add(FileTransferServiceFactory.getService(myId, order, fileRepository, trackerConnection));
     }
 
 

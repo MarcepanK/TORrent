@@ -50,6 +50,10 @@ public class FileRepository {
         return Optional.empty();
     }
 
+    public Optional<FileMetadata> getFileMetadata(File file) {
+        return Optional.of(files.get(file));
+    }
+
     public FileMetadata[] getAllFilesMetadata() {
         return files.values().toArray(new FileMetadata[0]);
     }

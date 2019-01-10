@@ -4,17 +4,15 @@ import java.io.Serializable;
 
 public class Piece implements Serializable {
 
-    public static final long DEFAULT_PIECE_DATA_LEN = 1024L;
+    public static final int DEFAULT_PIECE_DATA_LEN = 1024;
 
     public final FileMetadata fileMetadata;
     public final int index;
-    public final int totalPiecesCount;
     public final byte[] data;
 
-    public Piece(FileMetadata fileMetadata, int index, int totalPiecesCount, byte[] data) {
+    public Piece(FileMetadata fileMetadata, int index, byte[] data) {
         this.fileMetadata = fileMetadata;
         this.index = index;
-        this.totalPiecesCount = totalPiecesCount;
         this.data = data;
     }
 }

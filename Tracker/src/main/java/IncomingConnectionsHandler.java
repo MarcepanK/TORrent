@@ -28,7 +28,8 @@ public class IncomingConnectionsHandler implements Runnable {
         try {
             serverSocket = new ServerSocket(Tracker.TRACKER_PORT);
         }catch (Exception e) {
-            e.printStackTrace();
+            logger.severe("Unable to create Tracker\n Quitiing");
+            System.exit(1);
         }
     }
 

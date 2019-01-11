@@ -33,12 +33,14 @@ public class TransferServiceContainer {
         while (iter.hasNext()) {
             FileTransferService service = (FileTransferService) iter.next();
             if (service instanceof FileDownloadService) {
-                if (((FileDownloadService) service).isComplete()) {
-                    ((FileDownloadService) service).finalizeDownloadService();
+                FileDownloadService downloadService = (FileDownloadService) service;
+                if (downloadService.isComplete()) {
+                    downloadService.finalizeDownloadService();
                     iter.remove();
                 }
             } else if (service instanceof FileUploadService) {
-                if (((FileUploadService) service).isComplete()) {
+                FileUploadService uploadService = (FileUploadService) service;
+                if (uploadService.isComplete()) {
                     iter.remove();
                 }
             }

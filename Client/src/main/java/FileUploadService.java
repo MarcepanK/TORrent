@@ -39,16 +39,19 @@ public class FileUploadService extends FileTransferService {
 
     @Override
     public void run() {
-        logger.info("Sending");
-        for (Piece piece : piecesToSend) {
-            logger.info("Sending " + piece);
-            leechConnection.send(piece);
-            trackerConnection.send(RequestFactory.getUpdateRequest(myId, 0L,
-                                                                   piece.data.length,  piece.fileMetadata.name));
+        logger.info("Waiting for permission to send files");
+        Object received = leechConnection.receive();
+        if (received.equals("start")) {
+            for (Piece piece : piecesToSend) {
+                logger.info("Sending " + piece);
+                leechConnection.send(piece);
+                trackerConnection.send(RequestFactory.getUpdateRequest(myId, 0L,
+                        piece.data.length, piece.fileMetadata.name));
+            }
+            logger.info("finalizing");
+            leechConnection.send(RequestFactory.getDisconnectRequest());
+            complete = true;
         }
-        logger.info("finalizing");
-        leechConnection.send(RequestFactory.getDisconnectRequest());
-        complete = true;
     }
 
     public boolean isComplete() {

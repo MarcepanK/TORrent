@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 public class Client {
 
     private static final Logger logger = Logger.getLogger(Client.class.getName());
-    public static final String DEFAULT_PATH_PREFIX = "/home/marcin/Documents/SKJ/TORrent_";
+    public static final String DEFAULT_PATH_PREFIX = "D:/TORrent_";
 
     private int id;
     private FileRepository fileRepository;

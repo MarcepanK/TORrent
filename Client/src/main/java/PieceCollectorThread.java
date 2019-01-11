@@ -1,7 +1,6 @@
 import common.Connection;
 import request.Request;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PieceCollectorThread extends Thread {
@@ -13,22 +12,19 @@ public class PieceCollectorThread extends Thread {
     public PieceCollectorThread(List<Piece> pieces, Connection seedConnection) {
         this.pieces = pieces;
         this.seedConnection = seedConnection;
+        System.out.println("Piece collector thread created");
     }
 
     @Override
     public void run() {
+        seedConnection.send("start");
         while(running) {
-            if (seedConnection.getSocket().isClosed()) {
-                Object received = seedConnection.receive();
-                System.out.println("Received" + received);
-                if (received instanceof Piece) {
-                    System.out.println("Received piece");
-                    pieces.add((Piece) received);
-                } else if (received instanceof Request) {
-                    running = false;
-                }
-            } else {
+            Object received = seedConnection.receive();
+            if (received instanceof Piece) {
+                pieces.add((Piece) received);
+            } else if (received instanceof Request) {
                 running = false;
+                break;
             }
         }
     }

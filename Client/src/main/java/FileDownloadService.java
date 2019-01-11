@@ -19,7 +19,7 @@ public class FileDownloadService extends FileTransferService {
     private List<Piece> filePieces;
     private Set<PieceCollectorThread> pieceCollectorThreadSet;
     private ServerSocket serverSocket;
-    boolean isComplete = false;
+    private boolean complete = false;
 
     public FileDownloadService(int myId, FileMetadata orderedFileMetadata) {
         super(orderedFileMetadata);
@@ -27,8 +27,8 @@ public class FileDownloadService extends FileTransferService {
         this.filePieces = Collections.synchronizedList(new LinkedList<>());
         this.pieceCollectorThreadSet = Collections.synchronizedSet(new HashSet<>());
         createServerSock();
-        scheduledExecutorService.scheduleAtFixedRate(this::cleanupInactiveThreads, 0,3, TimeUnit.SECONDS);
-        logger.info("Started download service");
+        scheduledExecutorService.scheduleAtFixedRate(this::cleanupInactiveThreads, 5,3, TimeUnit.SECONDS);
+        logger.info("Starting download service");
     }
 
     private void createServerSock() {
@@ -43,24 +43,28 @@ public class FileDownloadService extends FileTransferService {
         Connection connection = new Connection(socket);
         PieceCollectorThread thread = new PieceCollectorThread(filePieces, connection);
         pieceCollectorThreadSet.add(thread);
-        thread.run();
+        thread.start();
         logger.info("new download thread started");
     }
 
     private void cleanupInactiveThreads() {
         pieceCollectorThreadSet.removeIf(thread -> !thread.isRunning());
-    }
-
-    public boolean isComplete() {
-        if (!filePieces.isEmpty())
-            return filePieces.size() >= filePieces.get(0).fileMetadata.size;
-        return false;
+        if (pieceCollectorThreadSet.isEmpty()) {
+            try {
+                finalizeDownloadService();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void finalizeDownloadService() throws Exception {
-        logger.info("Finalizing service");
-        filePieces.sort(Comparator.comparingInt(o -> o.index));
-        FileUtils.assembleFileFromPieces(filePieces.toArray(new Piece[0]), Client.DEFAULT_PATH_PREFIX + myId + "/" +filePieces.get(0).fileMetadata.name);
+        if (!complete) {
+            logger.info("Finalizing service");
+            filePieces.sort(Comparator.comparingInt(o -> o.index));
+            FileUtils.assembleFileFromPieces(filePieces.toArray(new Piece[0]), Client.DEFAULT_PATH_PREFIX + myId + "/" + filePieces.get(0).fileMetadata.name);
+            complete = true;
+        }
     }
 
     @Override
@@ -73,5 +77,9 @@ public class FileDownloadService extends FileTransferService {
                 e.printStackTrace();
             }
         }
+    }
+
+    public boolean isComplete() {
+        return complete;
     }
 }

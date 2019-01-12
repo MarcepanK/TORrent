@@ -13,7 +13,6 @@ public class FileTransferServiceFactory {
         if (orderedFile.isPresent()) {
             Optional<FileMetadata> fileMetadata = fileRepository.getFileMetadata(orderedFile.get());
             Piece[] piecesToUpload = FileUtils.getOrderedPieces(orderedFile.get(), fileMetadata.get(), order.filePartToSend, order.totalParts);
-            System.out.println("Generated: " + piecesToUpload.length + "pieces");
             return new FileUploadService(order.orderedFileMetadata, myId, order.leechId, trackerConnection, piecesToUpload);
         } else {
             return null;

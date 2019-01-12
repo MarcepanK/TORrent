@@ -12,7 +12,6 @@ public class PieceCollectorThread extends Thread {
     public PieceCollectorThread(List<Piece> pieces, Connection seedConnection) {
         this.pieces = pieces;
         this.seedConnection = seedConnection;
-        System.out.println("Piece collector thread created");
     }
 
     @Override

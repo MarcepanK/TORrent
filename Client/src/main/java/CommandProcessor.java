@@ -48,6 +48,8 @@ public class CommandProcessor {
                 processRequestCommand(command.substring("request".length()+1));
             } else if (command.toLowerCase().startsWith("list")) {
                 processListCommand(command.substring("list".length()+1));
+            } else {
+                System.out.println("bad command");
             }
         }).start();
     }

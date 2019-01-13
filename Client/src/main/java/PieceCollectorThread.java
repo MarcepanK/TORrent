@@ -22,7 +22,8 @@ public class PieceCollectorThread extends Thread {
             if (received instanceof Piece) {
                 pieces.add((Piece) received);
             } else if (received instanceof Request) {
-                running = false;
+                seedConnection.close();
+		running = false;
                 break;
             }
         }

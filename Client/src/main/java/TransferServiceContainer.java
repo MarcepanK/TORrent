@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 public class TransferServiceContainer {
 
+    private static final Logger logger = Logger.getLogger(TransferServiceContainer.class.getName());
     private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
     private List<FileTransferService> serviceList;
@@ -37,11 +38,13 @@ public class TransferServiceContainer {
                 if (downloadService.isComplete()) {
                     downloadService.finalizeDownloadService();
                     iter.remove();
+		    logger.info("removing download service");
                 }
             } else if (service instanceof FileUploadService) {
                 FileUploadService uploadService = (FileUploadService) service;
                 if (uploadService.isComplete()) {
                     iter.remove();
+		    logger.info("removing upload service");
                 }
             }
         }

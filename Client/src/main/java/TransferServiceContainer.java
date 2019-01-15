@@ -1,10 +1,8 @@
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 public class TransferServiceContainer {
 
@@ -13,13 +11,13 @@ public class TransferServiceContainer {
 
     private List<FileTransferService> serviceList;
 
-    public TransferServiceContainer() throws Exception {
+    public TransferServiceContainer() {
         serviceList = Collections.synchronizedList(new LinkedList<>());
         scheduledExecutorService.scheduleAtFixedRate(() -> {
             try {
                 finalizeIfComplete();
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.severe(String.format("Failed to finalize service"));
             }
         }, 0, 2, TimeUnit.SECONDS);
     }
@@ -48,5 +46,9 @@ public class TransferServiceContainer {
                 }
             }
         }
+    }
+
+    public Collection<FileTransferService> getActiveServices() {
+        return serviceList;
     }
 }

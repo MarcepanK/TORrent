@@ -4,6 +4,7 @@ import order.UploadOrder;
 import request.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class RequestProcessor {
@@ -50,8 +51,8 @@ public class RequestProcessor {
     private void processFileListRequest(Request request) {
         logger.info(String.format("Handling %s request from client with id: %d",
                 request.requestCode.toString(), request.requesterId));
-        ArrayList<FileMetadata> allTrackedTorrentsMetadata = (ArrayList<FileMetadata>) torrentContainer.getAllTrackedTorrentsFileMetadata();
-        connectionContainer.getConnectionById(request.requesterId).ifPresent(connection -> connection.send(allTrackedTorrentsMetadata));
+        ArrayList<FileMetadata> fileList = torrentContainer.provideFileListForCient(request.requesterId);
+        connectionContainer.getConnectionById(request.requesterId).ifPresent(connection -> connection.send(fileList));
     }
 
     /**

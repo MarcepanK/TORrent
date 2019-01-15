@@ -81,4 +81,23 @@ public class TorrentContainer {
         return trackedTorrents.stream().map(trackedTorrent -> trackedTorrent.fileMetadata).collect(Collectors.toList());
     }
 
+    /**
+     * Returns list of fileMetadata of tracked Torrents that aren't tracked by
+     * client with given id
+     * Purpose of this function is to call it when client sends request for file list
+     * and we don't want to send him files that he already has
+     *
+     * @param clientId id of client who requests file list
+     * @return Collection of fileMetadata objects
+     */
+    public ArrayList<FileMetadata> provideFileListForCient(int clientId) {
+        ArrayList<FileMetadata> fileList = new ArrayList<>();
+        for (TrackedTorrent torrent : trackedTorrents) {
+            if (!torrent.getPeerById(clientId).isPresent()) {
+                fileList.add(torrent.fileMetadata);
+            }
+        }
+        return fileList;
+    }
+
 }

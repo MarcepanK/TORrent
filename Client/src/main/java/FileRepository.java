@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 
 /**
@@ -21,7 +22,7 @@ public class FileRepository {
 
     public FileRepository(String directoryPath) {
         files = new ConcurrentHashMap<>();
-	this.directoryPath = directoryPath;
+        this.directoryPath = directoryPath;
         initFiles();
     }
 
@@ -32,38 +33,39 @@ public class FileRepository {
         File directory = new File(directoryPath);
         if (!directory.exists()) {
             try {
-                Files.createDirectory(Paths.get(dirPath));
+                Files.createDirectory(Paths.get(directoryPath));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        for(File file : directory.listFiles()) {
+        for (File file : directory.listFiles()) {
             files.put(file, FileUtils.getFileMetadata(file));
         }
     }
-    
+
     /**
      * Invoked when download service is complete or by user entering command 'update'
      * Checks if all files are already stored in map, and if not, generates their metadata
      * and adds them to map
      */
     public void update() {
-    	File directory = new File(directoryPath);
-	if(!directory.exists(){
-	    logger.warning(String.format("Directory with path: %s doesnt exist", directoryPath);
-	} else {
-	    File[] dirFiles = directory.listFiles();
-	    for (File file : dirFiles) {
-	        if (!files.containsKey(file)) {
-		    files.put(file, FileUtils.getFileMetadata(file));
-		    logger.info("new file data stored");
-		}
-	    }
-	}
+        File directory = new File(directoryPath);
+        if (!directory.exists()) {
+            logger.warning(String.format("Directory with path: %s doesnt exist", directoryPath));
+        } else {
+            File[] dirFiles = directory.listFiles();
+            for (File file : dirFiles) {
+                if (!files.containsKey(file)) {
+                    files.put(file, FileUtils.getFileMetadata(file));
+                    logger.info("new file data stored");
+                }
+            }
+        }
     }
 
+
     public Optional<File> getFileByName(String fileName) {
-        for(Map.Entry<File, FileMetadata> entry : files.entrySet()) {
+        for (Map.Entry<File, FileMetadata> entry : files.entrySet()) {
             if (entry.getValue().name.equals(fileName)) {
                 return Optional.of(entry.getKey());
             }

@@ -21,16 +21,15 @@ public class FileUploadService extends FileTransferService {
         this.myId = myId;
         this.trackerConnection = trackerConnection;
         this.piecesToSend = piecesToSend;
-        logger.info("Starting uploadService");
+        logger.info(String.format("Started upload service. Sending file: %s to: %d", transferredFileMetadata.name, leechId));
         establishConnectionWithLeech(leechId);
-        logger.info("Pieces to send: " + piecesToSend.length);
     }
 
     private void establishConnectionWithLeech(int leechId) {
         try {
             Thread.sleep(3000);
             leechConnection = new Connection(new Socket("localhost", 10000 + leechId));
-            logger.info("connection established");
+            logger.info(String.format("connection to leech with id: %d established", leechId));
             Thread.sleep(5000);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
@@ -48,7 +47,7 @@ public class FileUploadService extends FileTransferService {
                 trackerConnection.send(RequestFactory.getUpdateRequest(myId, 0L,
                         piece.data.length, piece.fileMetadata.name));
             }
-            logger.info("finalizing");
+            logger.info("finalizing upload service: ");
             leechConnection.send(RequestFactory.getDisconnectRequest());
             complete = true;
         }

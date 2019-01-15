@@ -11,15 +11,13 @@ public class FileUploadService extends FileTransferService {
 
     private int myId;
     private Connection leechConnection;
-    private Connection trackerConnection;
     private Piece[] piecesToSend;
     private boolean complete = false;
 
-    public FileUploadService(FileMetadata transferredFileMetadata,
-                             int myId, int leechId, Connection trackerConnection, Piece[] piecesToSend) {
-        super(transferredFileMetadata);
+    public FileUploadService(FileMetadata transferredFileMetadata, Connection trackerConnection,
+                             int myId, int leechId, Piece[] piecesToSend) {
+        super(transferredFileMetadata, trackerConnection);
         this.myId = myId;
-        this.trackerConnection = trackerConnection;
         this.piecesToSend = piecesToSend;
         logger.info(String.format("Started upload service. Sending file: %s to: %d", transferredFileMetadata.name, leechId));
         establishConnectionWithLeech(leechId);

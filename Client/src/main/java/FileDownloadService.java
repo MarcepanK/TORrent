@@ -14,15 +14,14 @@ public class FileDownloadService extends FileTransferService {
 
     private static final Logger logger = Logger.getLogger(FileDownloadService.class.getName());
     private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
-
     private int myId;
     private List<Piece> filePieces;
     private Set<PieceCollectorThread> pieceCollectorThreadSet;
     private ServerSocket serverSocket;
     private boolean complete = false;
 
-    public FileDownloadService(int myId, FileMetadata orderedFileMetadata) {
-        super(orderedFileMetadata);
+    public FileDownloadService(Connection trackerConnection, int myId, FileMetadata orderedFileMetadata) {
+        super(orderedFileMetadata, trackerConnection);
         this.myId = myId;
         this.filePieces = Collections.synchronizedList(new LinkedList<>());
         this.pieceCollectorThreadSet = Collections.synchronizedSet(new HashSet<>());

@@ -4,7 +4,6 @@ import order.UploadOrder;
 import request.*;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 public class RequestProcessor {
@@ -13,12 +12,12 @@ public class RequestProcessor {
 
     private ConnectionContainer connectionContainer;
     private TorrentContainer torrentContainer;
-    private OrderSender orderSender;
+    private OrderDispatcher orderDispatcher;
 
     public RequestProcessor(ConnectionContainer connectionContainer, TorrentContainer torrentContainer) {
         this.connectionContainer = connectionContainer;
         this.torrentContainer = torrentContainer;
-        orderSender = new OrderSender(connectionContainer);
+        orderDispatcher = new OrderDispatcher(connectionContainer);
     }
 
     /**
@@ -63,7 +62,7 @@ public class RequestProcessor {
     private void processPullRequest(PullRequest request) {
         logger.info(String.format("Handling %s request | from %d | file: %s already has: %d",
                 request.requestCode.toString(), request.requesterId, request.fileName, request.downloaded));
-        orderSender.sendOutOrders(OrderFactory.getDownloadOrder(torrentContainer, request),
+        orderDispatcher.dispatchOrders(OrderFactory.getDownloadOrder(torrentContainer, request),
                                   OrderFactory.getUploadOrders(torrentContainer, request));
     }
 
@@ -75,7 +74,7 @@ public class RequestProcessor {
     private void processPushRequest(PushRequest request) {
         logger.info(String.format("Handling %s request | from %d to %d | file: %s",
                 request.requestCode.toString(), request.requesterId, request.destinationHostId, request.fileName));
-        orderSender.sendOutOrders(OrderFactory.getDownloadOrder(torrentContainer, request),
+        orderDispatcher.dispatchOrders(OrderFactory.getDownloadOrder(torrentContainer, request),
                                   OrderFactory.getUploadOrder(torrentContainer, request));
     }
 

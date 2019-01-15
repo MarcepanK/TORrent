@@ -36,7 +36,7 @@ public class IncomingConnectionsHandler implements Runnable {
     /**
      * Invoked when client connects to serverSocket.
      * Awaits for client to send a {@link ClientHandshake}
-     * @param socket
+     * @param socket socket returned by ServerSocket method accept()
      */
     private void handleNewConnection(Socket socket) {
         new Thread(() -> {

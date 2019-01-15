@@ -27,7 +27,7 @@ public class Client {
         initTrackerConnection();
         orderProcessor = new OrderProcessor(id, fileRepository, trackerConnection, transferServiceContainer);
         trackerListener = new TrackerListener(trackerConnection, orderProcessor);
-        commandProcessor = new CommandProcessor(id, trackerConnection, fileRepository);
+        commandProcessor = new CommandProcessor(id, trackerConnection, fileRepository, transferServiceContainer);
         console = new ClientConsole(commandProcessor);
     }
 

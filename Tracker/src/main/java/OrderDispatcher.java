@@ -3,24 +3,23 @@ import common.FileMetadata;
 import order.DownloadOrder;
 import order.UploadOrder;
 
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /**
  * <p>This class is responsible for validating and sending Orders to Clients</p>
  * <p>Used by {@link RequestProcessor}</p>
  */
-public class OrderSender {
+public class OrderDispatcher {
 
-    private static final Logger logger = Logger.getLogger(OrderSender.class.getName());
+    private static final Logger logger = Logger.getLogger(OrderDispatcher.class.getName());
 
     private ConnectionContainer connectionContainer;
 
-    public OrderSender(ConnectionContainer connectionContainer) {
+    public OrderDispatcher(ConnectionContainer connectionContainer) {
         this.connectionContainer = connectionContainer;
     }
 
-    public void sendOutOrders(DownloadOrder downloadOrder, UploadOrder[] uploadOrders) {
+    public void dispatchOrders(DownloadOrder downloadOrder, UploadOrder[] uploadOrders) {
         if (ordersValid(uploadOrders) && orderValid(downloadOrder)) {
            connectionContainer.getConnectionById(uploadOrders[0].leechId).get().send(downloadOrder);
            for (int seedIdx = 0; seedIdx < downloadOrder.seeds.length; seedIdx++) {
@@ -30,7 +29,7 @@ public class OrderSender {
         }
     }
 
-    public void sendOutOrders(DownloadOrder downloadOrder, UploadOrder uploadOrder) {
+    public void dispatchOrders(DownloadOrder downloadOrder, UploadOrder uploadOrder) {
         if (orderValid(downloadOrder) && orderValid(uploadOrder)) {
             connectionContainer.getConnectionById(uploadOrder.leechId).get().send(downloadOrder);
             connectionContainer.getConnectionById(downloadOrder.seeds[0].id).get().send(uploadOrder);
@@ -56,13 +55,6 @@ public class OrderSender {
                 logger.warning("wrong file metadata");
                 return false;
             }
-//            if (currentOrder.filePartToSend != orderNo + 1 ||
-//                    currentOrder.totalParts != orderCount ||
-//                    currentOrder.leech != leech ||
-//                    currentOrder.orderedFileMetadata != orderedFileMetadata) {
-//                logger.warning("UploadOrder not valid");
-//                return false;
-//            }
         }
         return connectionContainer.getConnectionById(leechId).isPresent();
     }

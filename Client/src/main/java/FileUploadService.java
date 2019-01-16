@@ -47,6 +47,7 @@ public class FileUploadService extends FileTransferService {
             }
             logger.info("finalizing upload service: ");
             leechConnection.send(RequestFactory.getDisconnectRequest());
+            leechConnection.close();
             complete = true;
         }
     }

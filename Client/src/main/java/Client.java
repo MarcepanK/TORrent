@@ -8,7 +8,8 @@ import java.util.logging.Logger;
 public class Client {
 
     private static final Logger logger = Logger.getLogger(Client.class.getName());
-    public static final String DEFAULT_PATH_PREFIX = "D:/TORrent_";
+
+    public static final String DEFAULT_PATH_PREFIX = "/home/marcin/Documents/TORrent_";
 
     private int id;
     private FileRepository fileRepository;
@@ -20,7 +21,7 @@ public class Client {
     private ClientConsole console;
 
 
-    public Client(int id) throws Exception {
+    public Client(int id) {
         this.id = id;
         fileRepository = new FileRepository(DEFAULT_PATH_PREFIX + id);
         transferServiceContainer = new TransferServiceContainer();

@@ -15,10 +15,13 @@ public class FileUtils {
         long piecesInPart = partLengthInBytes / Piece.DEFAULT_PIECE_DATA_LEN;
         int pieceIdx = (int) ((partNo - 1) * piecesInPart);
         int byteArrStartingIdx = (int) (partLengthInBytes * (partNo-1));
+        if (partNo == 1 && totalParts == 1) {
+            return getRemainingPieces(file, fileMetadata, byteArrStartingIdx, pieceIdx);
+        }
         if (partNo == totalParts) {
             return getRemainingPieces(file, fileMetadata, byteArrStartingIdx, pieceIdx);
         }
-        int byteArrEndingIdx = (int) (byteArrStartingIdx + partLengthInBytes -1);
+        int byteArrEndingIdx = (int) (byteArrStartingIdx + partLengthInBytes);
         byte[] fileContent = getBytes(file, byteArrStartingIdx, byteArrEndingIdx);
         Piece[] pieces = splitToPieces(fileMetadata, fileContent, pieceIdx, piecesInPart);
         return pieces;
@@ -34,29 +37,35 @@ public class FileUtils {
     private static byte[] getBytes(File file, int fileContentStartingIdx, int fileContentEndingIdx) throws Exception {
         RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
         byte[] fileContent = new byte[fileContentEndingIdx - fileContentStartingIdx];
-        randomAccessFile.read(fileContent, fileContentStartingIdx, fileContentEndingIdx -1 );
+        System.out.println(String.format("File size: %d\nStarting idx: %d Ending idx: %d\nNew array size: %d", file.length(), fileContentStartingIdx, fileContentEndingIdx, fileContent.length));
+        randomAccessFile.seek(fileContentStartingIdx);
+        randomAccessFile.read(fileContent, 0, fileContent.length);
         return fileContent;
     }
 
     private static Piece[] splitToPieces(FileMetadata fileMetadata, byte[] bytes, int pieceIdx, long piecesInPart) {
         Piece[] pieces = new Piece[(int) piecesInPart];
-        for (int i=0; i<piecesInPart; i++) {
-            pieces[i] = new Piece(fileMetadata, pieceIdx, Arrays.copyOfRange(bytes, i*Piece.DEFAULT_PIECE_DATA_LEN, i*Piece.DEFAULT_PIECE_DATA_LEN + Piece.DEFAULT_PIECE_DATA_LEN));
+        int i;
+        for (i=0; i<piecesInPart-1; i++) {
+            int from = i*Piece.DEFAULT_PIECE_DATA_LEN;
+            int to = i * Piece.DEFAULT_PIECE_DATA_LEN + Piece.DEFAULT_PIECE_DATA_LEN;
+            pieces[i] = new Piece(fileMetadata, pieceIdx, Arrays.copyOfRange(bytes, from, to));
             pieceIdx++;
         }
+        pieces[i] = new Piece(fileMetadata, pieceIdx, Arrays.copyOfRange(bytes, i*Piece.DEFAULT_PIECE_DATA_LEN, bytes.length));
         return pieces;
     }
 
     public static void assembleFileFromPieces(Piece[] pieces, String path) throws Exception {
         byte[] fileContent;
         long allPiecesLen = 0;
-        int idx=0;
         for (Piece piece : pieces) {
             if (piece != null) {
                 allPiecesLen += piece.data.length;
             }
         }
         fileContent = new byte[(int)allPiecesLen];
+        int idx = 0;
         for (Piece piece : pieces) {
             if (piece != null) {
                 for (byte b : piece.data) {

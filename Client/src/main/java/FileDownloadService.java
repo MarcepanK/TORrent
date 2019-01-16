@@ -14,6 +14,7 @@ public class FileDownloadService extends FileTransferService {
 
     private static final Logger logger = Logger.getLogger(FileDownloadService.class.getName());
     private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+
     private int myId;
     private List<Piece> filePieces;
     private Set<PieceCollectorThread> pieceCollectorThreadSet;

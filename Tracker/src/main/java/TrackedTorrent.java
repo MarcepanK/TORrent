@@ -50,15 +50,6 @@ public class TrackedTorrent {
         return true;
     }
 
-    public boolean isPeer(int clientId) {
-        for (TrackedPeer peer : peers) {
-            if (peer.clientMetadata.id == clientId) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public boolean hasAnyPeer() {
         return peers.size() != 0;
     }

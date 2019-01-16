@@ -16,16 +16,23 @@ public class OrderProcessor {
         this.transferServiceContainer = transferServiceContainer;
     }
 
-    public void processOrder(Order order) throws Exception {
-        if (order instanceof UploadOrder) {
-            handleUploadOrder((UploadOrder) order);
-        } else if (order instanceof DownloadOrder) {
-            handleDownloadOrder((DownloadOrder) order);
-        }
+    public void processOrder(Order order) {
+        new Thread(() ->{
+            if (order instanceof UploadOrder) {
+                handleUploadOrder((UploadOrder) order);
+            } else if (order instanceof DownloadOrder) {
+                handleDownloadOrder((DownloadOrder) order);
+            }
+        }).start();
     }
 
-    private void handleUploadOrder(UploadOrder order) throws Exception {
-        transferServiceContainer.add(FileTransferServiceFactory.getService(myId, order, fileRepository, trackerConnection));
+    private void handleUploadOrder(UploadOrder order) {
+        try {
+            fileRepository.update();
+            transferServiceContainer.add(FileTransferServiceFactory.getService(myId, order, fileRepository, trackerConnection));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void handleDownloadOrder(DownloadOrder order) {

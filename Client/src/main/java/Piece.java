@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Piece implements Serializable {
 
-    public static final int DEFAULT_PIECE_DATA_LEN = 1024;
+    public static final int DEFAULT_PIECE_DATA_LEN = 262144;
 
     public final FileMetadata fileMetadata;
     public final int index;
@@ -14,5 +14,10 @@ public class Piece implements Serializable {
         this.fileMetadata = fileMetadata;
         this.index = index;
         this.data = data;
+    }
+
+    @Override
+    public String toString() {
+        return index + " | bytes: " + data.length;
     }
 }

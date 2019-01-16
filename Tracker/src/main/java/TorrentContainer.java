@@ -26,7 +26,7 @@ public class TorrentContainer {
      */
     public void onClientConnected(ClientMetadata clientMetadata, FileMetadata[] ownedFiles) {
         for (FileMetadata fileMetadata : ownedFiles) {
-            Optional<TrackedTorrent> torrent = getTrackedTorrentByFileName(fileMetadata.name);
+            Optional<TrackedTorrent> torrent = getTrackedTorrentByMd5Sum(fileMetadata.md5sum);
             if (torrent.isPresent()) {
                 torrent.get().addPeer(new TrackedPeer(clientMetadata));
                 logger.info(String.format("Torrent %s found. Peer %d added.", fileMetadata.name, clientMetadata.id));
@@ -71,6 +71,15 @@ public class TorrentContainer {
     public Optional<TrackedTorrent> getTrackedTorrentByFileName(String fileName) {
         for (TrackedTorrent torrent : trackedTorrents) {
             if (torrent.fileMetadata.name.equals(fileName)) {
+                return Optional.of(torrent);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public Optional<TrackedTorrent> getTrackedTorrentByMd5Sum(String md5sum) {
+        for (TrackedTorrent torrent : trackedTorrents) {
+            if(torrent.fileMetadata.md5sum.equals(md5sum)) {
                 return Optional.of(torrent);
             }
         }

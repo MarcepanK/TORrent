@@ -1,9 +1,14 @@
+import common.ClientMetadata;
+import common.Connection;
 import common.FileMetadata;
 import order.DownloadOrder;
 import order.UploadOrder;
 import request.*;
+import sun.security.krb5.internal.crypto.CksumType;
 
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 public class RequestProcessor {
@@ -64,6 +69,14 @@ public class RequestProcessor {
                 request.requestCode.toString(), request.requesterId, request.fileName, request.downloaded));
         orderDispatcher.dispatchOrders(OrderFactory.getDownloadOrder(torrentContainer, request),
                                   OrderFactory.getUploadOrders(torrentContainer, request));
+        torrentContainer.getTrackedTorrentByFileName(request.fileName).ifPresent(torrent->{
+            Optional<Connection> newPeerConnection = connectionContainer.getConnectionById(request.requesterId);
+            if (newPeerConnection.isPresent()) {
+                InetSocketAddress sockAddress =(InetSocketAddress) newPeerConnection.get().getSocket().getRemoteSocketAddress();
+                ClientMetadata newPeerMetadata = new ClientMetadata(request.requesterId, sockAddress);
+                torrent.addPeer(new TrackedPeer(newPeerMetadata, 0L, 0L, 0L));
+            }
+        });
     }
 
     /**

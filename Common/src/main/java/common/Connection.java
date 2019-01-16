@@ -47,7 +47,6 @@ public class Connection {
 
     public Object receive() {
         try {
-            System.out.println("received");
             return inputStream.readObject();
         } catch (Exception e) {
             e.printStackTrace();

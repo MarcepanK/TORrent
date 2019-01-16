@@ -22,7 +22,7 @@ public class CommandProcessor {
     }
 
     private void processRequestCommand(String requestArgs) {
-        Request request = RequestFactory.getRequest(clientId, requestArgs);
+        Request request = RequestFactory.getDisconnectRequest(clientId, requestArgs);
         if (request.requestCode != RequestCode.UNKNOWN) {
             trackerConnection.send(request);
             if (request.requestCode == RequestCode.DISCONNECT) {
@@ -34,6 +34,7 @@ public class CommandProcessor {
 
     private void processListCommand(String listCommandArg) {
         if (listCommandArg.equals("files")) {
+            fileRepository.update();
             FileMetadata[] ownedFiles = fileRepository.getAllFilesMetadata();
             for (FileMetadata metadata : ownedFiles) {
                 System.out.println(metadata);

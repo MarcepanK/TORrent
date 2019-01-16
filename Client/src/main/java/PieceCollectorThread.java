@@ -20,8 +20,10 @@ public class PieceCollectorThread extends Thread {
         while(running) {
             Object received = seedConnection.receive();
             if (received instanceof Piece) {
+                System.out.println("received: " + received);
                 pieces.add((Piece) received);
             } else if (received instanceof Request) {
+                System.out.println("received: " + received);
                 seedConnection.close();
 		        running = false;
                 break;

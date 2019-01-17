@@ -35,6 +35,7 @@ public class TransferServiceContainer {
                 FileDownloadService downloadService = (FileDownloadService) service;
                 if (downloadService.isComplete()) {
                     downloadService.finalizeDownloadService();
+                    downloadService.closeServerSock();
                     iter.remove();
 		    logger.info("removing download service");
                 }

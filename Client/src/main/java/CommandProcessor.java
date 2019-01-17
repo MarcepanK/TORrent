@@ -25,10 +25,10 @@ public class CommandProcessor {
         Request request = RequestFactory.getDisconnectRequest(clientId, requestArgs);
         if (request.requestCode != RequestCode.UNKNOWN) {
             trackerConnection.send(request);
+            logger.info(String.format("Request with code %s has been sent to tracker", request.requestCode.toString()));
             if (request.requestCode == RequestCode.DISCONNECT) {
                 System.exit(1);
             }
-            logger.info(String.format("Request with code %s has been sent to tracker", request.requestCode.toString()));
         }
     }
 

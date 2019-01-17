@@ -67,14 +67,21 @@ public class FileDownloadService extends FileTransferService {
         }
     }
 
+    public void closeServerSock() {
+        try {
+            serverSocket.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void run() {
-        while (true) {
+        while (!serverSocket.isClosed()) {
             try {
                 addNewPieceCollectorThread(serverSocket.accept());
             } catch (IOException e) {
-                logger.severe("Big oopsie");
-                e.printStackTrace();
+                logger.warning("Server socket closed");
             }
         }
     }

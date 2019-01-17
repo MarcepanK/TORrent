@@ -10,6 +10,17 @@ import java.util.Arrays;
 
 public class FileUtils {
 
+    /**
+     * Invoked when client receives {@link order.UploadOrder}
+     * Generates pieces that will be sent to other client
+     *
+     * @param file file which was ordered by leech
+     * @param fileMetadata metadata of ordered file
+     * @param partNo part of file that will be split to Pieces
+     * @param totalParts
+     * @return Pieces which will be sent to leech
+     * @throws Exception
+     */
     public static Piece[] getOrderedPieces(File file, FileMetadata fileMetadata, int partNo, int totalParts) throws Exception {
         long partLengthInBytes = fileMetadata.size / totalParts;
         long piecesInPart = partLengthInBytes / Piece.DEFAULT_PIECE_DATA_LEN;
@@ -37,7 +48,8 @@ public class FileUtils {
     private static byte[] getBytes(File file, int fileContentStartingIdx, int fileContentEndingIdx) throws Exception {
         RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
         byte[] fileContent = new byte[fileContentEndingIdx - fileContentStartingIdx];
-        System.out.println(String.format("File size: %d\nStarting idx: %d Ending idx: %d\nNew array size: %d", file.length(), fileContentStartingIdx, fileContentEndingIdx, fileContent.length));
+        System.out.println(String.format("File size: %d\nStarting idx: %d Ending idx: %d\nNew array size: %d", file.length(),
+                fileContentStartingIdx, fileContentEndingIdx, fileContent.length));
         randomAccessFile.seek(fileContentStartingIdx);
         randomAccessFile.read(fileContent, 0, fileContent.length);
         return fileContent;
@@ -57,34 +69,11 @@ public class FileUtils {
     }
 
     public static void assembleFileFromPieces(Piece[] pieces, String path) throws Exception {
-        byte[] fileContent;
-        long allPiecesLen = 0;
-        for (Piece piece : pieces) {
-            if (piece != null) {
-                allPiecesLen += piece.data.length;
-            }
+        createFile(path);
+        FileOutputStream fos = new FileOutputStream(new File(path));
+        for (Piece piece : pieces){
+            fos.write(piece.data);
         }
-        fileContent = new byte[(int)allPiecesLen];
-        int idx = 0;
-        for (Piece piece : pieces) {
-            if (piece != null) {
-                for (byte b : piece.data) {
-                    if (b == 0) {
-                        break;
-                    }
-                    fileContent[idx++] = b;
-                }
-            } else {
-                break;
-            }
-        }
-        byteArrToFile(fileContent, path);
-    }
-
-    public static void byteArrToFile(byte[] fileContent, String filePath) throws Exception {
-        createFile(filePath);
-        FileOutputStream fos = new FileOutputStream(filePath);
-        fos.write(fileContent);
     }
 
 

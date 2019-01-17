@@ -45,14 +45,10 @@ public class RequestFactory {
      * @return {@link PullRequest}
      */
     private static PullRequest getPullRequest(int clientId, String[] args) {
-        if (args.length == 2) {
-            if (args[1].matches("[0-9]+")) {
-                String fileName = args[0];
-                long downloaded = Long.parseLong(args[1]);
-                return new PullRequest(clientId, RequestCode.PULL, fileName, downloaded);
-            }
+        if (args.length == 1) {
+            return new PullRequest(clientId, RequestCode.PULL, args[0]);
         }
-        return new PullRequest(clientId, RequestCode.UNKNOWN, null, 0);
+        return new PullRequest(clientId, RequestCode.UNKNOWN, args[0]);
     }
 
     /**

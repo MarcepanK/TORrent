@@ -1,4 +1,2 @@
 TORrent
 === 
-
-#How to run

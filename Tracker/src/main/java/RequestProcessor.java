@@ -68,8 +68,8 @@ public class RequestProcessor {
      * @param request {@link PullRequest} that has been received
      */
     private void processPullRequest(PullRequest request) {
-        logger.info(String.format("Handling %s request | from %d | file: %s already has: %d",
-                request.requestCode.toString(), request.requesterId, request.fileName, request.downloaded));
+        logger.info(String.format("Handling %s request | from %d | file: %s",
+                request.requestCode.toString(), request.requesterId, request.fileName));
         orderDispatcher.dispatchOrders(OrderFactory.getDownloadOrder(torrentContainer, request),
                                   OrderFactory.getUploadOrders(torrentContainer, request));
         torrentContainer.getTrackedTorrentByFileName(request.fileName).ifPresent(torrent->{

@@ -39,6 +39,15 @@ public class FileUploadService extends FileTransferService {
         }
     }
 
+
+    @Override
+    protected void finalize() {
+        logger.info("finalizing upload service");
+        leechConnection.send(RequestFactory.getDisconnectRequest());
+        leechConnection.close();
+        complete = true;
+    }
+
     @Override
     public void run() {
         logger.info("Waiting for permission to send files");
@@ -50,14 +59,12 @@ public class FileUploadService extends FileTransferService {
                 trackerConnection.send(RequestFactory.getUpdateRequest(myId, 0L,
                         piece.data.length, piece.fileMetadata.name));
             }
-            logger.info("finalizing upload service");
-            leechConnection.send(RequestFactory.getDisconnectRequest());
-            leechConnection.close();
-            complete = true;
+            finalize();
         }
     }
 
     public boolean isComplete() {
         return complete;
     }
+
 }

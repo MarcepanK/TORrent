@@ -45,7 +45,6 @@ public class RequestFactoryTest {
         assertEquals(request.requesterId, clientId);
         assertEquals(request.requestCode, RequestCode.PULL);
         assertEquals(request.fileName, "file");
-        assertEquals(request.downloaded, 1024L);
     }
 
     @Test

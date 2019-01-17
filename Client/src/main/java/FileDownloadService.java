@@ -62,7 +62,7 @@ public class FileDownloadService extends FileTransferService {
         pieceCollectorThreadSet.removeIf(thread -> !thread.isRunning());
         if (pieceCollectorThreadSet.isEmpty()) {
             try {
-                finalizeDownloadService();
+                finalize();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -73,7 +73,8 @@ public class FileDownloadService extends FileTransferService {
      * sorts elements of PieceBuffer containing {@link Piece}
      * and assembles them into file
      */
-    public void finalizeDownloadService() {
+    @Override
+    protected void finalize() {
         if (!complete) {
             logger.info("Finalizing service");
             pieceBuffer.sort(Comparator.comparingInt(o -> o.index));

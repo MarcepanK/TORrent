@@ -11,4 +11,6 @@ public abstract class FileTransferService implements Runnable {
         this.transferredFileMetadata = transferredFileMetadata;
         this.trackerConnection = trackerConnection;
     }
+
+    protected abstract void finalize();
 }

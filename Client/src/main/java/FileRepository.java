@@ -9,10 +9,6 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
-
-/**
- * This class is responsible for storing all files and their metadata from given path
- */
 public class FileRepository {
 
     private static final Logger logger = Logger.getLogger(FileRepository.class.getName());
@@ -61,16 +57,6 @@ public class FileRepository {
                 }
             }
         }
-    }
-
-
-    public Optional<File> getFileByName(String fileName) {
-        for (Map.Entry<File, FileMetadata> entry : files.entrySet()) {
-            if (entry.getValue().name.equals(fileName)) {
-                return Optional.of(entry.getKey());
-            }
-        }
-        return Optional.empty();
     }
 
     public Optional<File> getFileByMd5sum(String md5sum) {

@@ -25,12 +25,24 @@ public class IncomingRequestsHandler implements Runnable {
         scheduledExecutorService.scheduleAtFixedRate(this::cleanupInactiveThreads, 0, 3, TimeUnit.SECONDS);
     }
 
+    /**
+     * Invoked when client connects to tracker
+     * Creates new thread responsible for receiving requests from client
+     *
+     * @param connection connection to newly connected client
+     */
     public void addNewRequestCollectorThread(Connection connection) {
         RequestCollectorThread thread = new RequestCollectorThread(connection, requestBuffer);
         thread.start();
         requestCollectorThreads.add(thread);
     }
 
+    /**
+     * Invoked every 3 seconds
+     *
+     * Searches for inactive threads responsible for receiving
+     * requests from clients and removes them
+     */
     private void cleanupInactiveThreads() {
         requestCollectorThreads.removeIf(thread -> !thread.isRunning());
     }

@@ -3,6 +3,10 @@ import common.FileMetadata;
 import java.util.*;
 import java.util.logging.Logger;
 
+/**
+ * This class is responsible for storing and manipulating data about
+ * Torrent and its peers
+ */
 public class TrackedTorrent {
 
     private static final Logger logger = Logger.getLogger(TrackedTorrent.class.getName());
@@ -26,10 +30,9 @@ public class TrackedTorrent {
         }
     }
 
-    public void removePeer(TrackedPeer trackedPeerToRemove) {
-        peers.remove(trackedPeerToRemove);
-        logger.info(String.format("peer id: %d removed from torrent %s",
-                trackedPeerToRemove.clientMetadata.id, fileMetadata.name));
+    public void removePeer(TrackedPeer peer) {
+        peers.remove(peer);
+        logger.info(String.format("peer id: %d removed from torrent %s", peer.clientMetadata.id, fileMetadata.name));
     }
 
     public void removePeer(int peerId) {

@@ -19,6 +19,12 @@ public class OrderDispatcher {
         this.connectionContainer = connectionContainer;
     }
 
+    /**
+     * Validates orders and sends them to clients
+     *
+     * @param downloadOrder order that will be sent to leech
+     * @param uploadOrders orders that will be sent to seeds
+     */
     public void dispatchOrders(DownloadOrder downloadOrder, UploadOrder[] uploadOrders) {
         if (ordersValid(uploadOrders) && orderValid(downloadOrder)) {
            connectionContainer.getConnectionById(uploadOrders[0].leechId).get().send(downloadOrder);
@@ -29,6 +35,12 @@ public class OrderDispatcher {
         }
     }
 
+    /**
+     * Validates orders and sends them to clients
+     *
+     * @param downloadOrder order that will be sent to leech
+     * @param uploadOrder order that will be sent to seed
+     */
     public void dispatchOrders(DownloadOrder downloadOrder, UploadOrder uploadOrder) {
         if (orderValid(downloadOrder) && orderValid(uploadOrder)) {
             connectionContainer.getConnectionById(uploadOrder.leechId).get().send(downloadOrder);
@@ -36,6 +48,17 @@ public class OrderDispatcher {
         }
     }
 
+    /**
+     * Checks if orders are valid:
+     *  - file parts are correct
+     *  - number of file parts is equal to number of seeds
+     *  - all upload orders have the same leech
+     *  - all orders have the same {@link FileMetadata}
+     *  - leech is connected to tracker
+     *
+     * @param orders orders that will be sent to seeds
+     * @return true if all orders meet requirements
+     */
     private boolean ordersValid(UploadOrder[] orders) {
         int orderCount = orders.length;
         int leechId = orders[0].leechId;
@@ -59,6 +82,14 @@ public class OrderDispatcher {
         return connectionContainer.getConnectionById(leechId).isPresent();
     }
 
+    /**
+     * Checks if order is valid:
+     *  - number of parts is 1
+     *  - leech is connected to tracker
+     *
+     * @param order order that will be sent to seed
+     * @return true if order meets all requirements
+     */
     private boolean orderValid(UploadOrder order) {
         if (order.totalParts != 1 || order.filePartToSend != 1) {
             logger.warning("Upload order not valid | ");
@@ -67,6 +98,13 @@ public class OrderDispatcher {
         return connectionContainer.getConnectionById(order.leechId).isPresent();
     }
 
+    /**
+     * Checks if order is valid:
+     *  - all seeds are connected to tracker
+     *
+     * @param order order that will be sent to leech
+     * @return true if order meets all requirements
+     */
     private boolean orderValid(DownloadOrder order) {
         for (ClientMetadata seed : order.seeds) {
             if (!connectionContainer.getConnectionById(seed.id).isPresent()) {

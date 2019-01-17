@@ -30,24 +30,18 @@ public class RequestFactory {
         return new UpdateRequest(clientId, RequestCode.UPDATE, downloaded, uploaded, fileName);
     }
 
-    /**
-     * @return {@link Request} with Disconnect {@link RequestCode}
-     */
     private static Request getDisconnectRequest(int clientId) {
         return new Request(clientId, RequestCode.DISCONNECT);
     }
 
-    /**
-     * @return {@link Request} with FILE_LIST {@link RequestCode}
-     */
     private static Request getFileListRequest(int clientId) {
         return new Request(clientId, RequestCode.FILE_LIST);
     }
 
     /**
-     * This function checks if given arguments are correct and returns {@link PullRequest}
+     * Checks if given arguments are correct and returns {@link PullRequest}
      *
-     * @param args
+     * @param args args that user typed into console
      * @return {@link PullRequest}
      */
     private static PullRequest getPullRequest(int clientId, String[] args) {
@@ -61,6 +55,13 @@ public class RequestFactory {
         return new PullRequest(clientId, RequestCode.UNKNOWN, null, 0);
     }
 
+    /**
+     * Checks if given arguments are correct and returns {@link PushRequest}
+     *
+     * @param clientId requester id
+     * @param args args that user typed into console
+     * @return {@link PushRequest}
+     */
     private static PushRequest getPushRequest(int clientId, String[] args) {
         if (args.length == 2) {
             if (args[0].matches("[0-9]+")) {

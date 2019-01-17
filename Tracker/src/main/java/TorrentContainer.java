@@ -16,7 +16,7 @@ public class TorrentContainer {
     }
 
     /**
-     * <p>Invoked when new client connects to tracker.</p>
+     * Invoked when new client connects to tracker.</p>
      * Checks if file owned by new client is already tracked (other clients may have it)
      * if (true) -> adds new peer(new client) to already tracked torrent
      * if (false) -> creates new tracked torrent and ads new client as it's peer
@@ -38,9 +38,9 @@ public class TorrentContainer {
     }
 
     /**
-     * <p>Invoked when client disconnects</p>
-     * <p>Iterates through all tracked torrents and checks if client
-     * that disconnected was peer of said torrent</p>
+     * Invoked when client disconnects
+     * Iterates through all tracked torrents and checks if client
+     * that disconnected was peer of said torrent
      * if (true) -> removes peer and checks if torrent has any peer (if not removes torrent)
      *
      * @param clientId id of a client that disconnected from tracker
@@ -63,11 +63,6 @@ public class TorrentContainer {
         }
     }
 
-    /**
-     * Searches and returns Optional of tracked torrent by given file name
-     * @param fileName name of a file that torrent is tracking
-     * @return Optional of TrackedTorrent
-     */
     public Optional<TrackedTorrent> getTrackedTorrentByFileName(String fileName) {
         for (TrackedTorrent torrent : trackedTorrents) {
             if (torrent.fileMetadata.name.equals(fileName)) {
@@ -78,7 +73,12 @@ public class TorrentContainer {
     }
 
     public Optional<TrackedTorrent> getTrackedTorrentByMd5Sum(String md5sum) {
-        for (TrackedTorrent torrent : trackedTorrents) {
+        for (TrackedTorrent torrent : trackedTorrents) {    /**
+     * Searches and returns Optional of tracked torrent by given file name
+     *
+     * @param fileName name of a file that torrent is tracking
+     * @return Optional of TrackedTorrent
+     */
             if(torrent.fileMetadata.md5sum.equals(md5sum)) {
                 return Optional.of(torrent);
             }
@@ -91,6 +91,8 @@ public class TorrentContainer {
     }
 
     /**
+     * Invoked when tracker received file list request
+     *
      * Returns list of fileMetadata of tracked Torrents that aren't tracked by
      * client with given id
      * Purpose of this function is to call it when client sends request for file list
@@ -99,7 +101,7 @@ public class TorrentContainer {
      * @param clientId id of client who requests file list
      * @return Collection of fileMetadata objects
      */
-    public ArrayList<FileMetadata> provideFileListForCient(int clientId) {
+    public ArrayList<FileMetadata> provideFileListForClient(int clientId) {
         ArrayList<FileMetadata> fileList = new ArrayList<>();
         for (TrackedTorrent torrent : trackedTorrents) {
             if (!torrent.getPeerById(clientId).isPresent()) {

@@ -4,7 +4,6 @@ import common.FileMetadata;
 import order.DownloadOrder;
 import order.UploadOrder;
 import request.*;
-import sun.security.krb5.internal.crypto.CksumType;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
@@ -27,6 +26,7 @@ public class RequestProcessor {
 
     /**
      * Removes client from every tracked torrent and connection container
+     *
      * @param request {@link Request} that has been received
      */
     private void processDisconnectRequest(Request request) {
@@ -38,6 +38,7 @@ public class RequestProcessor {
 
     /**
      * Updates state of {@link TrackedPeer} downloaded, uploaded and left fields
+     *
      * @param request {@link UpdateRequest} that has been received
      */
     private void processUpdateRequest(UpdateRequest request) {
@@ -50,18 +51,20 @@ public class RequestProcessor {
 
     /**
      * Sends array of {@link common.FileMetadata} of all tracked torrents to requester
+     *
      * @param request {@link Request} that has been received
      */
     private void processFileListRequest(Request request) {
         logger.info(String.format("Handling %s request from client with id: %d",
                 request.requestCode.toString(), request.requesterId));
-        ArrayList<FileMetadata> fileList = torrentContainer.provideFileListForCient(request.requesterId);
+        ArrayList<FileMetadata> fileList = torrentContainer.provideFileListForClient(request.requesterId);
         connectionContainer.getConnectionById(request.requesterId).ifPresent(connection -> connection.send(fileList));
     }
 
     /**
      * Sends {@link UploadOrder} to clients that own requested file and {@link DownloadOrder}
      * to client that wants to download a file
+     *
      * @param request {@link PullRequest} that has been received
      */
     private void processPullRequest(PullRequest request) {
@@ -82,6 +85,7 @@ public class RequestProcessor {
     /**
      * Sends {@link UploadOrder} to client that sent {@link PushRequest} and {@link DownloadOrder}
      * to client that is goind to receive the file
+     *
      * @param request {@link PushRequest} that has been received
      */
     private void processPushRequest(PushRequest request) {
@@ -93,6 +97,7 @@ public class RequestProcessor {
 
     /**
      * Sends message to requester about bad request args
+     *
      * @param request {@link Request} that has been received
      */
     private void handleUnknownRequest(Request request) {
@@ -103,6 +108,7 @@ public class RequestProcessor {
 
     /**
      * Checks type of received {@link Request} and invokes valid function to process it.
+     *
      * @param request {@link Request} that has been received
      */
     public void processRequest(Request request) {

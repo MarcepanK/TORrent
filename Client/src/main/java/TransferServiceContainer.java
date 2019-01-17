@@ -27,7 +27,12 @@ public class TransferServiceContainer {
         service.run();
     }
 
-    private void finalizeIfComplete() throws Exception {
+    /**
+     * Iterates over all running services and checks their state
+     * if complete service is found finalize function is called
+     * and service is removed from container
+     */
+    private void finalizeIfComplete() {
         Iterator iter = serviceList.iterator();
         while (iter.hasNext()) {
             FileTransferService service = (FileTransferService) iter.next();

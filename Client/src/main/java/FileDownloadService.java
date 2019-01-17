@@ -16,7 +16,7 @@ public class FileDownloadService extends FileTransferService {
     private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
     private int myId;
-    private List<Piece> filePieces;
+    private List<Piece> pieceBuffer;
     private Set<PieceCollectorThread> pieceCollectorThreadSet;
     private ServerSocket serverSocket;
     private boolean complete = false;
@@ -24,7 +24,7 @@ public class FileDownloadService extends FileTransferService {
     public FileDownloadService(Connection trackerConnection, int myId, FileMetadata orderedFileMetadata) {
         super(orderedFileMetadata, trackerConnection);
         this.myId = myId;
-        this.filePieces = Collections.synchronizedList(new LinkedList<>());
+        this.pieceBuffer = Collections.synchronizedList(new LinkedList<>());
         this.pieceCollectorThreadSet = Collections.synchronizedSet(new HashSet<>());
         createServerSock();
         scheduledExecutorService.scheduleAtFixedRate(this::cleanupInactiveThreads, 5,3, TimeUnit.SECONDS);
@@ -39,14 +39,25 @@ public class FileDownloadService extends FileTransferService {
         }
     }
 
+    /**
+     * Creates {@link Connection} to other client
+     * and collects pieces to PieceBuffer
+     *
+     * @param socket returned by ServerSocket method accept()
+     */
     private void addNewPieceCollectorThread(Socket socket) {
         Connection connection = new Connection(socket);
-        PieceCollectorThread thread = new PieceCollectorThread(filePieces, connection);
+        PieceCollectorThread thread = new PieceCollectorThread(pieceBuffer, connection);
         pieceCollectorThreadSet.add(thread);
         thread.start();
         logger.info("new download thread started");
     }
 
+
+    /**
+     * Removes inactive threads responsible for collecting pieces
+     * and finalizes service if no threads are active
+     */
     private void cleanupInactiveThreads() {
         pieceCollectorThreadSet.removeIf(thread -> !thread.isRunning());
         if (pieceCollectorThreadSet.isEmpty()) {
@@ -58,11 +69,19 @@ public class FileDownloadService extends FileTransferService {
         }
     }
 
-    public void finalizeDownloadService() throws Exception {
+    /**
+     * sorts elements of PieceBuffer containing {@link Piece}
+     * and assembles them into file
+     */
+    public void finalizeDownloadService() {
         if (!complete) {
             logger.info("Finalizing service");
-            filePieces.sort(Comparator.comparingInt(o -> o.index));
-            FileUtils.assembleFileFromPieces(filePieces.toArray(new Piece[0]), Client.DEFAULT_PATH_PREFIX + myId + "/" + filePieces.get(0).fileMetadata.name);
+            pieceBuffer.sort(Comparator.comparingInt(o -> o.index));
+            try {
+                FileUtils.assembleFileFromPieces(pieceBuffer.toArray(new Piece[0]), Client.DEFAULT_PATH_PREFIX + myId + "/" + pieceBuffer.get(0).fileMetadata.name);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             complete = true;
         }
     }

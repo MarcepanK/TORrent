@@ -6,10 +6,15 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
+/**
+ * This class is responsible for storing and manipulating
+ * Connections to all connected clients
+ */
 public class ConnectionContainer {
 
     private static final Logger logger = Logger.getLogger(ConnectionContainer.class.getName());
 
+    //<clientId, Connection>
     private Map<Integer, Connection> connections;
 
     public ConnectionContainer() {
@@ -19,6 +24,7 @@ public class ConnectionContainer {
     /**
      * Invoked when new client connects to tracker
      * Adds new entry to map
+     *
      * @param clientId id of newly connected client
      * @param connection {@link Connection} to newly connected client
      */
@@ -30,6 +36,7 @@ public class ConnectionContainer {
     /**
      * Invoked when Client sends {@link request.Request} with Disconnect {@link request.RequestCode}
      * Closes connection with client and removes it from connections list
+     *
      * @param clientId id of a client that wants to disconnect from tracker
      */
     public void onClientDisconnected(int clientId) {

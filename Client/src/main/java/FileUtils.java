@@ -12,14 +12,22 @@ public class FileUtils {
 
     /**
      * Invoked when client receives {@link order.UploadOrder}
-     * Generates pieces that will be sent to other client
+     * Returns pieces that will be sent to other client
+     *
+     * If there are multiple peers that are able to send
+     * file, then every one of them receives {@link order.UploadOrder}
+     * with part number, and number of all parts.
+     * i.e. if there's 5 peers able to send a file
+     * and client gets order with  params: partNo=2 totalParts=5
+     * he needs to send (1,[2],3,4,5) <- marked part of file
+     * which has to be split to pieces
      *
      * @param file file which was ordered by leech
      * @param fileMetadata metadata of ordered file
      * @param partNo part of file that will be split to Pieces
-     * @param totalParts
+     * @param totalParts total number of parts that will be sent to leech
      * @return Pieces which will be sent to leech
-     * @throws Exception
+     * @throws Exception file might be null
      */
     public static Piece[] getOrderedPieces(File file, FileMetadata fileMetadata, int partNo, int totalParts) throws Exception {
         long partLengthInBytes = fileMetadata.size / totalParts;
@@ -28,23 +36,43 @@ public class FileUtils {
         int byteArrStartingIdx = (int) (partLengthInBytes * (partNo-1));
         if (partNo == 1 && totalParts == 1) {
             return getRemainingPieces(file, fileMetadata, byteArrStartingIdx, pieceIdx);
+        } else {
+            int byteArrEndingIdx = (int) (byteArrStartingIdx + partLengthInBytes);
+            byte[] fileContent = getBytes(file, byteArrStartingIdx, byteArrEndingIdx);
+            return splitToPieces(fileMetadata, fileContent, pieceIdx, piecesInPart);
         }
-        if (partNo == totalParts) {
-            return getRemainingPieces(file, fileMetadata, byteArrStartingIdx, pieceIdx);
-        }
-        int byteArrEndingIdx = (int) (byteArrStartingIdx + partLengthInBytes);
-        byte[] fileContent = getBytes(file, byteArrStartingIdx, byteArrEndingIdx);
-        Piece[] pieces = splitToPieces(fileMetadata, fileContent, pieceIdx, piecesInPart);
-        return pieces;
     }
 
-    public static Piece[] getRemainingPieces(File file, FileMetadata fileMetadata, int byteArrStartingIdx, int pieceIdx) throws Exception {
+    /**
+     * Invoked when last part of file is required or there's only 1 seed
+     * Returns pieces that will be sent to other client
+     *
+     * @param file file that will be split to pieces
+     * @param fileMetadata metadata of file
+     * @param byteArrStartingIdx index at which bytes will be read from file
+     * @param pieceIdx index of first piece that will be sent to leech
+     * @return Pieces which will be sent to leech
+     */
+    public static Piece[] getRemainingPieces(File file, FileMetadata fileMetadata, int byteArrStartingIdx, int pieceIdx) {
         int byteArrEndingIdx= (int) fileMetadata.size;
-        byte[] fileContent = getBytes(file, byteArrStartingIdx, byteArrEndingIdx);
-        return splitToPieces(fileMetadata, fileContent, pieceIdx, (fileContent.length/Piece.DEFAULT_PIECE_DATA_LEN )+1);
+        byte[] fileContent;
+        try {
+            fileContent = getBytes(file, byteArrStartingIdx, byteArrEndingIdx);
+            return splitToPieces(fileMetadata, fileContent, pieceIdx, (fileContent.length/Piece.DEFAULT_PIECE_DATA_LEN )+1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    //FIXME
+    /**
+     * Returns bytes
+     *
+     * @param file file that will be split to pieces
+     * @param fileContentStartingIdx index from which we will start reading bytes from file
+     * @param fileContentEndingIdx index at which we will stop reading bytes from file
+     * @return array of bytes representing part of file
+     */
     private static byte[] getBytes(File file, int fileContentStartingIdx, int fileContentEndingIdx) throws Exception {
         RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
         byte[] fileContent = new byte[fileContentEndingIdx - fileContentStartingIdx];
@@ -55,6 +83,16 @@ public class FileUtils {
         return fileContent;
     }
 
+    /**
+     * Returns array of pieces generated from already cut out byte array from file
+     * converts array of bytes to array of pieces
+     *
+     * @param fileMetadata metadata of ordered file
+     * @param bytes file content that will be converted into pieces
+     * @param pieceIdx index of first piece
+     * @param piecesInPart total number of pieces in one part
+     * @return Pieces that will be sent to leech
+     */
     private static Piece[] splitToPieces(FileMetadata fileMetadata, byte[] bytes, int pieceIdx, long piecesInPart) {
         Piece[] pieces = new Piece[(int) piecesInPart];
         int i;

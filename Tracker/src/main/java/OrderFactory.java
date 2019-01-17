@@ -7,16 +7,16 @@ import request.PushRequest;
 import java.util.ArrayList;
 import java.util.Optional;
 
-/**
- * <p>This class is responsible for creating Orders depending on given data</p>
- * <p>used by {@link RequestProcessor}</p>
- */
 public class OrderFactory {
 
     /**
-     * Searches for all {@link TrackedPeer} that have requested file
+     * Invoked when tracker receives PullRequest and has to generate
+     * UploadOrders that will be sent to seeds
+     *
+     * Searches for all {@link TrackedPeer} that own requested file
      * and returns Array of {@link UploadOrder} that will be sent
      * to those peers
+     *
      * @param request {@link PullRequest} request that has been received
      * @return {@link ArrayList<UploadOrder>}
      */
@@ -37,7 +37,11 @@ public class OrderFactory {
     }
 
     /**
+     * Invoked when tracker receives PushRequest and has to generate
+     * Upload Order that will be sent to seed
+     *
      * Returns {@link UploadOrder} to client that sent request
+     *
      * @param request {@link PushRequest} that has been received
      * @return {@link UploadOrder}
      */
@@ -53,9 +57,13 @@ public class OrderFactory {
     }
 
     /**
+     * Invoked when tracker receives PullRequest and has to genereate downloadOrdere
+     * that will be sent to leech
+     *
      * Returns {@link DownloadOrder} to client that sent request with Pull {@link request.RequestCode}
      * Searches for all peers that are capable of sending requested file and places their {@link ClientMetadata}
      * in {@link DownloadOrder}
+     *
      * @param pullRequest {@link PullRequest} that has been received
      * @return {@link DownloadOrder}
      */
@@ -73,7 +81,11 @@ public class OrderFactory {
     }
 
     /**
+     * Invoked when tracker receives PushRequest and has to generate Download Order
+     * that will be sent to leech
+     *
      * Returns {@link DownloadOrder} with single {@link ClientMetadata} of client that sent {@link PushRequest}
+     *
      * @param pushRequest {@link PushRequest} that has been received
      * @return {@link DownloadOrder}
      */

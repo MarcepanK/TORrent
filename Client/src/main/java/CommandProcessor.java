@@ -21,6 +21,11 @@ public class CommandProcessor {
         this.transferServiceContainer = transferServiceContainer;
     }
 
+    /**
+     * Generates {@link Request} on given args and sends it to tracker
+     *
+     * @param requestArgs arguments that user typed into console
+     */
     private void processRequestCommand(String requestArgs) {
         Request request = RequestFactory.getDisconnectRequest(clientId, requestArgs);
         if (request.requestCode != RequestCode.UNKNOWN) {
@@ -29,9 +34,16 @@ public class CommandProcessor {
             if (request.requestCode == RequestCode.DISCONNECT) {
                 System.exit(1);
             }
+        } else {
+            System.out.println("bad command");
         }
     }
 
+    /**
+     * prints data depending on arguments
+     *
+     * @param listCommandArg
+     */
     private void processListCommand(String listCommandArg) {
         if (listCommandArg.equals("files")) {
             fileRepository.update();

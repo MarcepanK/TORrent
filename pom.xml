@@ -12,7 +12,6 @@
     <modules>
         <module>Tracker</module>
         <module>Common</module>
-        <module>Main</module>
         <module>Client</module>
     </modules>
 

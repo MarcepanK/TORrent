@@ -27,7 +27,7 @@ public class CommandProcessor {
      * @param requestArgs arguments that user typed into console
      */
     private void processRequestCommand(String requestArgs) {
-        Request request = RequestFactory.getDisconnectRequest(clientId, requestArgs);
+        Request request = RequestFactory.getRequest(clientId, requestArgs);
         if (request.requestCode != RequestCode.UNKNOWN) {
             trackerConnection.send(request);
             logger.info(String.format("Request with code %s has been sent to tracker", request.requestCode.toString()));

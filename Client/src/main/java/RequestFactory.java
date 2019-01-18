@@ -10,7 +10,7 @@ public class RequestFactory {
      * @param requestStr arguments that clients enters into console
      * @return Request object dependend on arguments
      */
-    public static Request getDisconnectRequest(int clientId, String requestStr) {
+    public static Request getRequest(int clientId, String requestStr) {
         String[] args = requestStr.split("\\s+");
         String requestCodeArg = args[0].toLowerCase();
         switch (requestCodeArg) {

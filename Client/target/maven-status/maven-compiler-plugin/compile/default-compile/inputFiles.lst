@@ -1,0 +1,16 @@
+/home/marcin/Repos/TORrent/Client/src/main/java/FileRepository.java
+/home/marcin/Repos/TORrent/Client/src/main/java/OrderProcessor.java
+/home/marcin/Repos/TORrent/Client/src/main/java/PieceCollectorThread.java
+/home/marcin/Repos/TORrent/Client/src/main/java/ClientConsole.java
+/home/marcin/Repos/TORrent/Client/src/main/java/FileTransferService.java
+/home/marcin/Repos/TORrent/Client/src/main/java/TrackerListener.java
+/home/marcin/Repos/TORrent/Client/src/main/java/FileTransferServiceFactory.java
+/home/marcin/Repos/TORrent/Client/src/main/java/Client.java
+/home/marcin/Repos/TORrent/Client/src/main/java/RequestFactory.java
+/home/marcin/Repos/TORrent/Client/src/main/java/Piece.java
+/home/marcin/Repos/TORrent/Client/src/main/java/CommandProcessor.java
+/home/marcin/Repos/TORrent/Client/src/main/java/FileDownloadService.java
+/home/marcin/Repos/TORrent/Client/src/main/java/FileUploadService.java
+/home/marcin/Repos/TORrent/Client/src/main/java/FileUtils.java
+/home/marcin/Repos/TORrent/Client/src/main/java/TransferServiceContainer.java
+/home/marcin/Repos/TORrent/Client/src/main/java/ClientMain.java

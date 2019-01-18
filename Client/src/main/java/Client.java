@@ -46,11 +46,22 @@ public class Client {
         }
     }
 
-
     public void launch() {
         Thread t1 = new Thread(console);
         Thread t2 = new Thread(trackerListener);
         t1.start();
         t2.start();
+    }
+
+    /**
+     * This function should be only used in {@link ClientMain}
+     *
+     * Connection to tracker is required in order to
+     * make shutdown hook work properly
+     *
+     * @return connection to tracker
+     */
+    public Connection getTrackerConnection() {
+        return trackerConnection;
     }
 }

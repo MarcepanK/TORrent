@@ -17,12 +17,16 @@ public class SerializedFileList implements Serializable {
     }
 
     public void print() {
-        for (Map.Entry<FileMetadata, int[]> entry : files.entrySet()) {
-            System.out.print(entry.getKey() + "| owners: ");
-            for (int ownerId : entry.getValue()) {
-                System.out.print(ownerId + " ");
+        if (!files.isEmpty()) {
+            for (Map.Entry<FileMetadata, int[]> entry : files.entrySet()) {
+                System.out.print(entry.getKey() + "| owners: ");
+                for (int ownerId : entry.getValue()) {
+                    System.out.print(ownerId + " ");
+                }
+                System.out.println();
             }
-            System.out.println();
+        } else {
+            System.out.println("no files");
         }
     }
 }

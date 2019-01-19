@@ -1,6 +1,7 @@
 import common.ClientMetadata;
 import common.Connection;
 import common.FileMetadata;
+import common.SerializedFileList;
 import order.DownloadOrder;
 import order.UploadOrder;
 import request.*;
@@ -57,8 +58,8 @@ public class RequestProcessor {
     private void processFileListRequest(Request request) {
         logger.info(String.format("Handling %s request from client with id: %d",
                 request.requestCode.toString(), request.requesterId));
-        ArrayList<FileMetadata> fileList = torrentContainer.provideFileListForClient(request.requesterId);
-        connectionContainer.getConnectionById(request.requesterId).ifPresent(connection -> connection.send(fileList));
+        SerializedFileList sfl = torrentContainer.provideFileListForClient(request.requesterId);
+        connectionContainer.getConnectionById(request.requesterId).ifPresent(connection -> connection.send(sfl));
     }
 
     /**

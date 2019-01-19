@@ -1,5 +1,6 @@
 import common.Connection;
 import common.FileMetadata;
+import common.SerializedFileList;
 import order.Order;
 
 import java.util.logging.Logger;
@@ -21,14 +22,14 @@ public class TrackerListener implements Runnable {
         while(true) {
             Object received = trackerConnection.receive();
             logger.info(String.format("Received data from tracker: %s", received.toString()));
-            if (received instanceof FileMetadata) {
-                FileMetadata metadata = (FileMetadata) received;
-                System.out.println(metadata);
+            if (received instanceof SerializedFileList) {
+                SerializedFileList fileList = (SerializedFileList) received;
+                fileList.print();
             } else if (received instanceof Order) {
                 try {
                     orderProcessor.processOrder((Order)received);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.warning("failed to process order");
                 }
             } else {
                 System.out.println(received);

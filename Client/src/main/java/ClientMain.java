@@ -9,7 +9,7 @@ public class ClientMain {
         int id = userInput.nextInt();
         try {
             Client client = new Client(id);
-            //Shutdown hook not working as intended 
+            //Shutdown hook not working as intended
             //Runtime.getRuntime().addShutdownHook(new ShutdownHook(id, client.getTrackerConnection()));
             client.launch();
         } catch (Exception e) {

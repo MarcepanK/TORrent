@@ -1,5 +1,6 @@
 import common.ClientMetadata;
 import common.FileMetadata;
+import common.SerializedFileList;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -93,22 +94,26 @@ public class TorrentContainer {
     /**
      * Invoked when tracker received file list request
      *
-     * Returns list of fileMetadata of tracked Torrents that aren't tracked by
-     * client with given id
+     * Returns {@link common.SerializedFileList} containing data of Torrents
+     * that aren't tracked by client who sent request
      * Purpose of this function is to call it when client sends request for file list
      * and we don't want to send him files that he already has
      *
      * @param clientId id of client who requests file list
      * @return Collection of fileMetadata objects
      */
-    public ArrayList<FileMetadata> provideFileListForClient(int clientId) {
-        ArrayList<FileMetadata> fileList = new ArrayList<>();
+    public SerializedFileList provideFileListForClient(int clientId) {
+        SerializedFileList res = new SerializedFileList();
         for (TrackedTorrent torrent : trackedTorrents) {
             if (!torrent.getPeerById(clientId).isPresent()) {
-                fileList.add(torrent.fileMetadata);
+                TrackedPeer[] peersWithCompleteFile = torrent.getPeersWithCompleteFile();
+                int[] ownersId = new int[peersWithCompleteFile.length];
+                for (int i = 0; i < peersWithCompleteFile.length; i++) {
+                    ownersId[i] = peersWithCompleteFile[i].clientMetadata.id;
+                }
+                res.addEntry(torrent.fileMetadata, ownersId);
             }
         }
-        return fileList;
+        return res;
     }
-
 }

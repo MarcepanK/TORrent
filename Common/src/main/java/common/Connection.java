@@ -38,8 +38,10 @@ public class Connection {
 
     public void send(Object data) {
         try {
-            outputStream.writeObject(data);
-            outputStream.flush();
+            if(socket.isConnected()) {
+                outputStream.writeObject(data);
+                outputStream.flush();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

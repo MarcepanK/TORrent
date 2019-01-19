@@ -1,5 +1,4 @@
 import common.Connection;
-import common.FileMetadata;
 import common.SerializedFileList;
 import order.Order;
 

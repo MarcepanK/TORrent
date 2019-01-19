@@ -41,10 +41,11 @@
     <property name="file.encoding" value="UTF-8"/>
     <property name="user.name" value="marcin"/>
     <property name="java.class.path" value="/usr/share/maven/boot/plexus-classworlds-2.x.jar"/>
+    <property name="org.slf4j.simpleLogger.defaultLogLevel" value="debug"/>
     <property name="java.vm.specification.version" value="1.8"/>
     <property name="sun.arch.data.model" value="64"/>
     <property name="java.home" value="/usr/local/java/jdk1.8.0_191/jre"/>
-    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher package"/>
+    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher package -X"/>
     <property name="java.specification.vendor" value="Oracle Corporation"/>
     <property name="user.language" value="en"/>
     <property name="awt.toolkit" value="sun.awt.X11.XToolkit"/>
@@ -63,7 +64,7 @@
     <property name="sun.cpu.isalist" value=""/>
   </properties>
   <testcase classname="TorrentContainerTest" name="TorrentContainer_Creation" time="0.044"/>
-  <testcase classname="TorrentContainerTest" name="TorrentContainer_OnClientConnected_MultipleClients" time="0.002"/>
+  <testcase classname="TorrentContainerTest" name="TorrentContainer_OnClientConnected_MultipleClients" time="0.003"/>
   <testcase classname="TorrentContainerTest" name="TorrentContainer_OnClientConnected_SingleClient" time="0.002"/>
-  <testcase classname="TorrentContainerTest" name="TorrentContainer_OnClientDisconnected_SingleClient" time="0.004"/>
+  <testcase classname="TorrentContainerTest" name="TorrentContainer_OnClientDisconnected_SingleClient" time="0.003"/>
 </testsuite>

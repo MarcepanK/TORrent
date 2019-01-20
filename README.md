@@ -24,7 +24,7 @@ ___
 NOT AVAILABLE YET
 * list broken - list files that are not complete due to some error - NOT AVAILABLE YET
 * list files - list owned files
-
+___
 #### Communication between hosts explanation
 Every running client is connected to tracker which is main communication hub.
 After executing any command starting with 'request, serialized object is sent to tracker.

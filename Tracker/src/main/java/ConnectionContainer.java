@@ -25,7 +25,7 @@ public class ConnectionContainer {
      * Invoked when new client connects to tracker
      * Adds new entry to map
      *
-     * @param clientId id of newly connected client
+     * @param clientId   id of newly connected client
      * @param connection {@link Connection} to newly connected client
      */
     public void onClientConnected(int clientId, Connection connection) {

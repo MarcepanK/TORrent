@@ -17,7 +17,7 @@ public class RequestCollectorThread extends Thread {
     /**
      * Constructor
      *
-     * @param connection connection to client that this thread will listen to
+     * @param connection    connection to client that this thread will listen to
      * @param requestBuffer Collection into which requests received from client will be inserted
      */
     public RequestCollectorThread(Connection connection, List<Request> requestBuffer) {

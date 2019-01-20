@@ -19,7 +19,7 @@ public class RequestFactoryTest {
 
     @Test
     public void RequestFactory_Update_Correct() {
-        UpdateRequest request = RequestFactory.getUpdateRequest(clientId, 100L, 1000L, "halko");
+        UpdateRequest request = RequestFactory.getRequest(clientId, 100L, 1000L, "halko");
 
         assertEquals(request.requesterId, clientId);
         assertEquals(request.requestCode, RequestCode.UPDATE);

@@ -1,8 +1,10 @@
 /home/marcin/Repos/TORrent/Common/src/main/java/order/Order.java
 /home/marcin/Repos/TORrent/Common/src/main/java/request/PullRequest.java
 /home/marcin/Repos/TORrent/Common/src/main/java/order/UploadOrder.java
+/home/marcin/Repos/TORrent/Common/src/main/java/order/SpecificPiecesUploadOrder.java
 /home/marcin/Repos/TORrent/Common/src/main/java/request/Request.java
 /home/marcin/Repos/TORrent/Common/src/main/java/request/UpdateRequest.java
+/home/marcin/Repos/TORrent/Common/src/main/java/request/RetryDownloadRequest.java
 /home/marcin/Repos/TORrent/Common/src/main/java/common/Connection.java
 /home/marcin/Repos/TORrent/Common/src/main/java/order/DownloadOrder.java
 /home/marcin/Repos/TORrent/Common/src/main/java/common/ClientMetadata.java

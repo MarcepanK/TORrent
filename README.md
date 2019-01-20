@@ -1,5 +1,5 @@
 TORrent
-=== 
+===
 #### How to launch
 ###### tracker
 In order to launch any client, tracked has to be up and running. 
@@ -20,9 +20,9 @@ ___
 * request push <client_id> <file_name> - send file to client with $client_id
 * request files - get list of files that are available to download
 * request disconnect - disconnects from tracker and quits program
-* request retry <file_name> - download parts of file that are missing due to some error - 
-NOT AVAILABLE YET
-* list broken - list files that are not complete due to some error - NOT AVAILABLE YET
+* continue <file_name> - download parts of file that are missing due to some error - 
+Something is not working here (it downloads whole file again)
+* list broken - list files that are not complete due to some error
 * list files - list owned files
 ___
 #### Communication between hosts explanation
@@ -77,9 +77,16 @@ to all clients taking part in transfer).
    
 ___
 ##### TODO:
+ * close client when he looses connection to tracker
  * images to visualise communication process
  * unit tests
+ * fix mess with collection types and toArray conversions
+ * fix mess with types (long, int) in FileUtils
+ * implement sending updated list of owned files to tracker (i.e. in case of deleting file)
+ * optimize getting specific pieces from file in FileUtils
  * checking with regex instead of startsWith in Client/CommandProcessor
  * getting specific pieces in Client/FileUtils
  * retrying downloading file after connection unexpectedly closes during file transfer
  * new FileTransferService for retrying downloading file in Client
+ * Make factories do heavy logic while creating objects
+ * (Optional) make tracker actually track all active transfers

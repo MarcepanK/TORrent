@@ -18,7 +18,7 @@ public class TrackerListener implements Runnable {
 
     @Override
     public void run() {
-        while(true) {
+        while (true) {
             Object received = trackerConnection.receive();
             logger.info(String.format("Received data from tracker: %s", received.toString()));
             if (received instanceof SerializedFileList) {
@@ -26,7 +26,7 @@ public class TrackerListener implements Runnable {
                 fileList.print();
             } else if (received instanceof Order) {
                 try {
-                    orderProcessor.processOrder((Order)received);
+                    orderProcessor.processOrder((Order) received);
                 } catch (Exception e) {
                     logger.warning("failed to process order");
                 }

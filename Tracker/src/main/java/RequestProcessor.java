@@ -72,11 +72,11 @@ public class RequestProcessor {
         logger.info(String.format("Handling %s request | from %d | file: %s",
                 request.requestCode.toString(), request.requesterId, request.fileName));
         orderDispatcher.dispatchOrders(OrderFactory.getDownloadOrder(torrentContainer, request),
-                                  OrderFactory.getUploadOrders(torrentContainer, request));
-        torrentContainer.getTrackedTorrentByFileName(request.fileName).ifPresent(torrent->{
+                OrderFactory.getUploadOrders(torrentContainer, request));
+        torrentContainer.getTrackedTorrentByFileName(request.fileName).ifPresent(torrent -> {
             Optional<Connection> newPeerConnection = connectionContainer.getConnectionById(request.requesterId);
             if (newPeerConnection.isPresent()) {
-                InetSocketAddress sockAddress =(InetSocketAddress) newPeerConnection.get().getSocket().getRemoteSocketAddress();
+                InetSocketAddress sockAddress = (InetSocketAddress) newPeerConnection.get().getSocket().getRemoteSocketAddress();
                 ClientMetadata newPeerMetadata = new ClientMetadata(request.requesterId, sockAddress);
                 torrent.addPeer(new TrackedPeer(newPeerMetadata, 0L, 0L, 0L));
             }
@@ -93,14 +93,14 @@ public class RequestProcessor {
         logger.info(String.format("Handling %s request | from %d  | file: %s",
                 request.requestCode.toString(), request.requesterId, request.destinationHostId, request.fileName));
         orderDispatcher.dispatchOrders(OrderFactory.getDownloadOrder(torrentContainer, request),
-                                  OrderFactory.getUploadOrder(torrentContainer, request));
+                OrderFactory.getUploadOrder(torrentContainer, request));
     }
 
     private void processRetryRequest(RetryDownloadRequest request) {
         logger.info(String.format("Handling %s request | from %d | file: %s",
                 request.requestCode.toString(), request.requesterId, request.transferredFileMetadata.name));
         orderDispatcher.dispatchOrders(OrderFactory.getDownloadOrder(torrentContainer, request),
-                                OrderFactory.getSpecificPiecesUploadOrder(torrentContainer, request));
+                OrderFactory.getSpecificPiecesUploadOrder(torrentContainer, request));
     }
 
     /**

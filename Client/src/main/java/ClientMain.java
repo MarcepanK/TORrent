@@ -25,8 +25,8 @@ public class ClientMain {
         Connection trackerConnection;
 
         private ShutdownHook(int clientId, Connection trackerConnection) {
-                this.clientId = clientId;
-                this.trackerConnection = trackerConnection;
+            this.clientId = clientId;
+            this.trackerConnection = trackerConnection;
         }
 
         public void run() {

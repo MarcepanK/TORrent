@@ -1,3 +1,4 @@
+import request.Request;
 import request.RetryDownloadRequest;
 
 import java.util.ArrayList;
@@ -6,20 +7,41 @@ import java.util.Collection;
 public class IncompleteServiceHandler {
 
     public static void handleIncompleteDownloadService(FileDownloadService fileDownloadService) {
+        FileUtils.storeOwnedPiecesInFile(fileDownloadService.getPieceBuffer(), fileDownloadService.getMyId());
         Collection<Integer> missingPiecesIndexes = getMissingPiecesIndexes(fileDownloadService.getPieceBuffer());
-        int downloadedBytesCount = getDownloadedByteCount(fileDownloadService.getPieceBuffer());
-        if (isSizeCorrect(missingPiecesIndexes.size(), downloadedBytesCount,
-                (int)fileDownloadService.getTransferredFileMetadata().size)) {
-            RetryDownloadRequest request = RequestFactory.getRequest(fileDownloadService.getMyId(),
-                    fileDownloadService.getTransferredFileMetadata(), missingPiecesIndexes, 0);
-            FileUtils.storeRetryDownloadRequestInFile(request);
-        } else {
-            int leftByteCount = getLeftByteCount(missingPiecesIndexes.size(), downloadedBytesCount,
-                    (int)fileDownloadService.getTransferredFileMetadata().size);
-            RetryDownloadRequest request = RequestFactory.getRequest(fileDownloadService.getMyId(),
-                    fileDownloadService.getTransferredFileMetadata(), missingPiecesIndexes, leftByteCount);
-            FileUtils.storeRetryDownloadRequestInFile(request);
+        int biggestPieceIndex = getBiggestPieceIndex(fileDownloadService.getPieceBuffer());
+        int fileSize = (int)fileDownloadService.getTransferredFileMetadata().size;
+        int trailingBytesCount = getTrailingBytesCount(missingPiecesIndexes.size(), biggestPieceIndex, fileSize);
+        RetryDownloadRequest request = RequestFactory.getRequest(fileDownloadService.getMyId(),
+                fileDownloadService.getTransferredFileMetadata(), missingPiecesIndexes,
+                trailingBytesCount, biggestPieceIndex);
+        FileUtils.storeOwnedPiecesInFile(fileDownloadService.getPieceBuffer(), fileDownloadService.getMyId());
+        FileUtils.storeRetryDownloadRequestInFile(request);
+
+//        if (isSizeCorrect(missingPiecesIndexes.size(), downloadedBytesCount,
+//                (int) fileDownloadService.getTransferredFileMetadata().size)) {
+//            RetryDownloadRequest request = RequestFactory.getRequest(fileDownloadService.getMyId(),
+//                    fileDownloadService.transferredFileMetadata, missingPiecesIndexes, getTrailingBytesCount(), )
+//            RetryDownloadRequest request = RequestFactory.getRequest(fileDownloadService.getMyId(),
+//                    fileDownloadService.getTransferredFileMetadata(), missingPiecesIndexes, biggestPieceIndex);
+//            FileUtils.storeRetryDownloadRequestInFile(request);
+//        } else {
+//            int trailingBytes = getTrailingBytesCount(missingPiecesIndexes.size(), downloadedBytesCount,
+//                    (int) fileDownloadService.getTransferredFileMetadata().size, biggestPieceIndex);
+//            RetryDownloadRequest request = RequestFactory.getRequest(fileDownloadService.getMyId(),
+//                    fileDownloadService.getTransferredFileMetadata(), missingPiecesIndexes, trailingBytes, biggestPieceIndex);
+//            FileUtils.storeRetryDownloadRequestInFile(request);
+//        }
+    }
+
+    private static int getBiggestPieceIndex(Collection<Piece> pieces) {
+        int max_index = 0;
+        for (Piece piece : pieces) {
+            if (piece.index > max_index) {
+                max_index = piece.index;
+            }
         }
+        return max_index;
     }
 
     private static Collection<Integer> getMissingPiecesIndexes(Collection<Piece> pieces) {
@@ -46,7 +68,7 @@ public class IncompleteServiceHandler {
         return downloadedBytes;
     }
 
-    private static int getLeftByteCount(int missingPiecesCount, int downloadedBytesCount, int fileSize) {
+    private static int getTrailingBytesCount(int missingPiecesCount, int downloadedBytesCount, int fileSize) {
         return fileSize - missingPiecesCount * Piece.DEFAULT_PIECE_DATA_LEN + downloadedBytesCount;
     }
 }

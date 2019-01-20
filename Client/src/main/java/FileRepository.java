@@ -24,6 +24,7 @@ public class FileRepository {
 
     /**
      * Loads all files and their metadata into map
+     * not including files with ".ser" extension
      */
     private void initFiles() {
         File directory = new File(directoryPath);
@@ -33,9 +34,12 @@ public class FileRepository {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-        for (File file : directory.listFiles()) {
-            files.put(file, FileUtils.getFileMetadata(file));
+        } else {
+            for (File file : directory.listFiles()) {
+                if (!file.getName().endsWith(".ser")) {
+                    files.put(file, FileUtils.getFileMetadata(file));
+                }
+            }
         }
     }
 
@@ -51,7 +55,7 @@ public class FileRepository {
         } else {
             File[] dirFiles = directory.listFiles();
             for (File file : dirFiles) {
-                if (!files.containsKey(file)) {
+                if (!files.containsKey(file) && !file.getName().endsWith(".ser")) {
                     files.put(file, FileUtils.getFileMetadata(file));
                     logger.info("new file data stored");
                 }

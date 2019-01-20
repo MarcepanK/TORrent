@@ -39,7 +39,7 @@ public class IncomingRequestsHandler implements Runnable {
 
     /**
      * Invoked every 3 seconds
-     *
+     * <p>
      * Searches for inactive threads responsible for receiving
      * requests from clients and removes them
      */
@@ -49,7 +49,7 @@ public class IncomingRequestsHandler implements Runnable {
 
     @Override
     public void run() {
-        while(true) {
+        while (true) {
             if (!requestBuffer.isEmpty()) {
                 Request request = requestBuffer.get(0);
                 requestBuffer.remove(0);

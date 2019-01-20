@@ -91,12 +91,10 @@ public class OrderFactory {
     public static DownloadOrder getDownloadOrder(TorrentContainer torrentContainer, RetryDownloadRequest request) {
         Optional<TrackedTorrent> torrent = torrentContainer.getTrackedTorrentByFileName(request.transferredFileMetadata.name);
         if (torrent.isPresent()) {
-            Optional<TrackedPeer> peer = torrent.get().getPeerById(request.requesterId);
-            if (peer.isPresent()) {
-                ClientMetadata[] seeds = new ClientMetadata[1];
-                seeds[0] = peer.get().clientMetadata;
-                return new DownloadOrder(torrent.get().fileMetadata, seeds);
-            }
+            TrackedPeer[] peers = torrent.get().getPeersWithCompleteFile();
+            ClientMetadata[] seeds = new ClientMetadata[1];
+            seeds[0] = peers[0].clientMetadata;
+            return new DownloadOrder(torrent.get().fileMetadata, seeds);
         }
         return null;
     }
@@ -104,7 +102,7 @@ public class OrderFactory {
     /**
      * Invoked when tracker receives PushRequest and has to generate Download Order
      * that will be sent to leech
-     *
+     * <p>
      * Returns {@link DownloadOrder} with single {@link ClientMetadata} of client that sent {@link PushRequest}
      *
      * @param pushRequest {@link PushRequest} that has been received
@@ -128,7 +126,7 @@ public class OrderFactory {
         Optional<TrackedTorrent> torrent = torrentContainer.getTrackedTorrentByFileName(request.transferredFileMetadata.name);
         if (torrent.isPresent()) {
             return new SpecificPiecesUploadOrder(request.transferredFileMetadata, request.requesterId,
-                    request.missingPiecesIndexes, request.missingBytesCount);
+                    request.missingPiecesIndexes, request.missingBytesCount, request.biggestPieceIndex);
         }
         return null;
     }

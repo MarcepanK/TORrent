@@ -27,7 +27,7 @@ public class IncomingConnectionsHandler implements Runnable {
     private void createServerSocket() {
         try {
             serverSocket = new ServerSocket(Tracker.TRACKER_PORT);
-        }catch (Exception e) {
+        } catch (Exception e) {
             logger.severe("Unable to create Tracker\n Quitiing");
             System.exit(1);
         }
@@ -45,15 +45,15 @@ public class IncomingConnectionsHandler implements Runnable {
             logger.info("Handling new connection");
             Connection newConnection = new Connection(socket);
             Object received = newConnection.receive();
-            if(received instanceof ClientHandshake) {
+            if (received instanceof ClientHandshake) {
                 ClientHandshake handshake = (ClientHandshake) received;
-                InetSocketAddress sockAddress = (InetSocketAddress)socket.getRemoteSocketAddress();
+                InetSocketAddress sockAddress = (InetSocketAddress) socket.getRemoteSocketAddress();
                 ClientMetadata clientMetadata = new ClientMetadata(handshake.id, sockAddress);
                 torrentContainer.onClientConnected(clientMetadata, handshake.ownedFilesMetadata);
                 connectionContainer.onClientConnected(clientMetadata.id, newConnection);
                 logger.info(String.format("Received handshake from: id: %d | address: %s | port: %d",
                         clientMetadata.id, clientMetadata.address.getAddress(), clientMetadata.address.getPort()));
-                connectionContainer.getConnectionById(clientMetadata.id).ifPresent(connection-> connection.send("Hello"));
+                connectionContainer.getConnectionById(clientMetadata.id).ifPresent(connection -> connection.send("Hello"));
                 incomingRequestsHandler.addNewRequestCollectorThread(newConnection);
             }
         }).start();
@@ -62,7 +62,7 @@ public class IncomingConnectionsHandler implements Runnable {
     @Override
     public void run() {
         try {
-            while(true) {
+            while (true) {
                 handleNewConnection(serverSocket.accept());
                 Thread.sleep(1000);
             }

@@ -55,7 +55,7 @@ public class Client {
 
     /**
      * This function should be only used in {@link ClientMain}
-     *
+     * <p>
      * Connection to tracker is required in order to
      * make shutdown hook work properly
      *

@@ -1,15 +1,15 @@
 import common.Connection;
 import request.Request;
 
-import java.util.List;
+import java.util.Collection;
 
 public class PieceCollectorThread extends Thread {
 
-    private List<Piece> pieces;
+    private Collection<Piece> pieces;
     private Connection seedConnection;
     private boolean running = true;
 
-    public PieceCollectorThread(List<Piece> pieces, Connection seedConnection) {
+    public PieceCollectorThread(Collection<Piece> pieces, Connection seedConnection) {
         this.pieces = pieces;
         this.seedConnection = seedConnection;
     }
@@ -17,7 +17,7 @@ public class PieceCollectorThread extends Thread {
     @Override
     public void run() {
         seedConnection.send("start");
-        while(running) {
+        while (running) {
             Object received = seedConnection.receive();
             if (received instanceof Piece) {
                 System.out.println("received: " + received);
@@ -25,7 +25,7 @@ public class PieceCollectorThread extends Thread {
             } else if (received instanceof Request) {
                 System.out.println("received: " + received);
                 seedConnection.close();
-		        running = false;
+                running = false;
                 break;
             }
         }

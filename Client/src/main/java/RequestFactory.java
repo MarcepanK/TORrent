@@ -16,18 +16,24 @@ public class RequestFactory {
         String[] args = requestStr.split("\\s+");
         String requestCodeArg = args[0].toLowerCase();
         switch (requestCodeArg) {
-            case "disconnect": return getDisconnectRequest(clientId);
-            case "files":      return getFileListRequest(clientId);
-            case "pull":       return getPullRequest(clientId, Arrays.copyOfRange(args, 1, args.length));
-            case "push":       return getPushRequest(clientId, Arrays.copyOfRange(args, 1, args.length));
-            default:           return new Request(clientId, RequestCode.UNKNOWN);
+            case "disconnect":
+                return getDisconnectRequest(clientId);
+            case "files":
+                return getFileListRequest(clientId);
+            case "pull":
+                return getPullRequest(clientId, Arrays.copyOfRange(args, 1, args.length));
+            case "push":
+                return getPushRequest(clientId, Arrays.copyOfRange(args, 1, args.length));
+            default:
+                return new Request(clientId, RequestCode.UNKNOWN);
         }
     }
 
     public static RetryDownloadRequest getRequest(int clientId, FileMetadata transferredFileMetadata,
-                                                  Collection<Integer> missingPiecesIndexes, int missingBytesCount) {
+                                                  Collection<Integer> missingPiecesIndexes, int missingBytesCount,
+                                                  int biggestPieceIndex) {
         return new RetryDownloadRequest(clientId, RequestCode.RETRY, transferredFileMetadata,
-                missingPiecesIndexes, missingBytesCount);
+                missingPiecesIndexes, missingBytesCount, biggestPieceIndex);
     }
 
     public static Request getRequest() {
@@ -63,7 +69,7 @@ public class RequestFactory {
      * Checks if given arguments are correct and returns {@link PushRequest}
      *
      * @param clientId requester id
-     * @param args args that user typed into console
+     * @param args     args that user typed into console
      * @return {@link PushRequest}
      */
     private static PushRequest getPushRequest(int clientId, String[] args) {

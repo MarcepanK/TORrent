@@ -17,11 +17,13 @@ public class OrderProcessor {
     }
 
     public void processOrder(Order order) {
-        new Thread(() ->{
+        new Thread(() -> {
             if (order instanceof UploadOrder) {
                 handleUploadOrder((UploadOrder) order);
             } else if (order instanceof DownloadOrder) {
                 handleDownloadOrder((DownloadOrder) order);
+            } else if (order instanceof SpecificPiecesUploadOrder) {
+                handleSpecificPiecesUploadOrder((SpecificPiecesUploadOrder) order);
             }
         }).start();
     }
@@ -39,5 +41,7 @@ public class OrderProcessor {
         transferServiceContainer.add(FileTransferServiceFactory.getService(myId, order, trackerConnection));
     }
 
-
+    private void handleSpecificPiecesUploadOrder(SpecificPiecesUploadOrder order) {
+        transferServiceContainer.add(FileTransferServiceFactory.getService(myId, order, fileRepository, trackerConnection));
+    }
 }

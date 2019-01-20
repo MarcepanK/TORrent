@@ -23,7 +23,7 @@ public class TorrentContainer {
      * if (false) -> creates new tracked torrent and ads new client as it's peer
      *
      * @param clientMetadata newly connected client metadata(InetSocketAddress and id)
-     * @param ownedFiles FileMetadata of files owned by newly connected client
+     * @param ownedFiles     FileMetadata of files owned by newly connected client
      */
     public void onClientConnected(ClientMetadata clientMetadata, FileMetadata[] ownedFiles) {
         for (FileMetadata fileMetadata : ownedFiles) {
@@ -48,7 +48,7 @@ public class TorrentContainer {
      */
     public void onClientDisconnected(int clientId) {
         Iterator<TrackedTorrent> torrentIterator = trackedTorrents.iterator();
-        while(torrentIterator.hasNext()) {
+        while (torrentIterator.hasNext()) {
             TrackedTorrent torrent = torrentIterator.next();
             Optional<TrackedPeer> peer = torrent.getPeerById(clientId);
             if (peer.isPresent()) {
@@ -75,12 +75,12 @@ public class TorrentContainer {
 
     public Optional<TrackedTorrent> getTrackedTorrentByMd5Sum(String md5sum) {
         for (TrackedTorrent torrent : trackedTorrents) {    /**
-     * Searches and returns Optional of tracked torrent by given file name
-     *
-     * @param fileName name of a file that torrent is tracking
-     * @return Optional of TrackedTorrent
-     */
-            if(torrent.fileMetadata.md5sum.equals(md5sum)) {
+         * Searches and returns Optional of tracked torrent by given file name
+         *
+         * @param fileName name of a file that torrent is tracking
+         * @return Optional of TrackedTorrent
+         */
+            if (torrent.fileMetadata.md5sum.equals(md5sum)) {
                 return Optional.of(torrent);
             }
         }
@@ -93,7 +93,7 @@ public class TorrentContainer {
 
     /**
      * Invoked when tracker received file list request
-     *
+     * <p>
      * Returns {@link common.SerializedFileList} containing data of Torrents
      * that aren't tracked by client who sent request
      * Purpose of this function is to call it when client sends request for file list

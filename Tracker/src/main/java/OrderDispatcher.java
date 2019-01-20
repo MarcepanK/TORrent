@@ -24,15 +24,15 @@ public class OrderDispatcher {
      * Validates orders and sends them to clients
      *
      * @param downloadOrder order that will be sent to leech
-     * @param uploadOrders orders that will be sent to seeds
+     * @param uploadOrders  orders that will be sent to seeds
      */
     public void dispatchOrders(DownloadOrder downloadOrder, UploadOrder[] uploadOrders) {
         if (ordersValid(uploadOrders) && orderValid(downloadOrder)) {
-           connectionContainer.getConnectionById(uploadOrders[0].leechId).get().send(downloadOrder);
-           for (int seedIdx = 0; seedIdx < downloadOrder.seeds.length; seedIdx++) {
+            connectionContainer.getConnectionById(uploadOrders[0].leechId).get().send(downloadOrder);
+            for (int seedIdx = 0; seedIdx < downloadOrder.seeds.length; seedIdx++) {
 
-               connectionContainer.getConnectionById(downloadOrder.seeds[seedIdx].id).get().send(uploadOrders[seedIdx]);
-           }
+                connectionContainer.getConnectionById(downloadOrder.seeds[seedIdx].id).get().send(uploadOrders[seedIdx]);
+            }
         }
     }
 
@@ -40,7 +40,7 @@ public class OrderDispatcher {
      * Validates orders and sends them to clients
      *
      * @param downloadOrder order that will be sent to leech
-     * @param uploadOrder order that will be sent to seed
+     * @param uploadOrder   order that will be sent to seed
      */
     public void dispatchOrders(DownloadOrder downloadOrder, UploadOrder uploadOrder) {
         if (orderValid(downloadOrder) && orderValid(uploadOrder)) {
@@ -58,11 +58,11 @@ public class OrderDispatcher {
 
     /**
      * Checks if orders are valid:
-     *  - file parts are correct
-     *  - number of file parts is equal to number of seeds
-     *  - all upload orders have the same leech
-     *  - all orders have the same {@link FileMetadata}
-     *  - leech is connected to tracker
+     * - file parts are correct
+     * - number of file parts is equal to number of seeds
+     * - all upload orders have the same leech
+     * - all orders have the same {@link FileMetadata}
+     * - leech is connected to tracker
      *
      * @param orders orders that will be sent to seeds
      * @return true if all orders meet requirements
@@ -92,8 +92,8 @@ public class OrderDispatcher {
 
     /**
      * Checks if order is valid:
-     *  - number of parts is 1
-     *  - leech is connected to tracker
+     * - number of parts is 1
+     * - leech is connected to tracker
      *
      * @param order order that will be sent to seed
      * @return true if order meets all requirements
@@ -108,7 +108,7 @@ public class OrderDispatcher {
 
     /**
      * Checks if order is valid:
-     *  - all seeds are connected to tracker
+     * - all seeds are connected to tracker
      *
      * @param order order that will be sent to leech
      * @return true if order meets all requirements
@@ -125,6 +125,10 @@ public class OrderDispatcher {
 
     //TODO
     private boolean orderValid(SpecificPiecesUploadOrder order) {
+        if (!connectionContainer.getConnectionById(order.leechId).isPresent()) {
+            logger.warning("SpecificPiecesUploadOrder not valid");
+            return false;
+        }
         return true;
     }
 }

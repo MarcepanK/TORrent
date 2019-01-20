@@ -41,13 +41,13 @@ public class TransferServiceContainer {
                 if (downloadService.isComplete()) {
                     downloadService.closeServerSock();
                     iter.remove();
-		    logger.info("removing download service");
+                    logger.info("removing download service");
                 }
             } else if (service instanceof FileUploadService) {
                 FileUploadService uploadService = (FileUploadService) service;
                 if (uploadService.isComplete()) {
                     iter.remove();
-		    logger.info("removing upload service");
+                    logger.info("removing upload service");
                 }
             }
         }

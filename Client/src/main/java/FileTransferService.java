@@ -4,7 +4,6 @@ import common.FileMetadata;
 public abstract class FileTransferService implements Runnable {
 
     public final FileMetadata transferredFileMetadata;
-
     protected Connection trackerConnection;
 
     public FileTransferService(FileMetadata transferredFileMetadata, Connection trackerConnection) {

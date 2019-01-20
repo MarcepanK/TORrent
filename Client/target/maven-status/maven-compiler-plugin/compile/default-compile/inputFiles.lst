@@ -5,6 +5,7 @@
 /home/marcin/Repos/TORrent/Client/src/main/java/FileTransferService.java
 /home/marcin/Repos/TORrent/Client/src/main/java/TrackerListener.java
 /home/marcin/Repos/TORrent/Client/src/main/java/FileTransferServiceFactory.java
+/home/marcin/Repos/TORrent/Client/src/main/java/IncompleteServiceHandler.java
 /home/marcin/Repos/TORrent/Client/src/main/java/Client.java
 /home/marcin/Repos/TORrent/Client/src/main/java/RequestFactory.java
 /home/marcin/Repos/TORrent/Client/src/main/java/Piece.java

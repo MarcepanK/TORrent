@@ -27,7 +27,7 @@ public class FileDownloadService extends FileTransferService {
         this.pieceBuffer = Collections.synchronizedList(new LinkedList<>());
         this.pieceCollectorThreadSet = Collections.synchronizedSet(new HashSet<>());
         createServerSock();
-        scheduledExecutorService.scheduleAtFixedRate(this::cleanupInactiveThreads, 5,3, TimeUnit.SECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(this::cleanupInactiveThreads, 5, 3, TimeUnit.SECONDS);
         logger.info("Starting download service");
     }
 
@@ -81,14 +81,21 @@ public class FileDownloadService extends FileTransferService {
             logger.info("Finalizing service");
             pieceBuffer.sort(Comparator.comparingInt(o -> o.index));
             if (hasWholeFile()) {
+                logger.info("assembling file");
+                FileUtils.assembleFileFromPieces(pieceBuffer, Client.DEFAULT_PATH_PREFIX
+                        + myId + "/" + pieceBuffer.get(0).fileMetadata.name);
+            } else {
                 try {
-                    logger.info("assembling file");
-                    FileUtils.assembleFileFromPieces(pieceBuffer.toArray(new Piece[0]), Client.DEFAULT_PATH_PREFIX
-                            + myId + "/" + pieceBuffer.get(0).fileMetadata.name);
+                    Collection<Piece> pieces = FileUtils.getPiecesFromBrokenFile(myId, transferredFileMetadata.name);
+                    if (!pieces.isEmpty()) {
+                        pieceBuffer.addAll(pieces);
+                        FileUtils.assembleFileFromPieces(pieceBuffer, Client.DEFAULT_PATH_PREFIX +
+                                myId + "/" + pieceBuffer.get(0).fileMetadata.name);
+
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } else {
                 logger.warning("Service not complete.");
                 IncompleteServiceHandler.handleIncompleteDownloadService(this);
             }
@@ -110,7 +117,7 @@ public class FileDownloadService extends FileTransferService {
         if (allPiecesLen == transferredFileMetadata.size) {
             logger.info("whole file has beend downloaded");
             return true;
-        }  else {
+        } else {
             logger.warning("something went wrong when downloading file");
             return false;
         }

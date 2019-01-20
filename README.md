@@ -1,11 +1,11 @@
 TORrent
 === 
-####How to launch
-######tracker
+#### How to launch
+###### tracker
 In order to launch any client, tracked has to be up and running. 
 To run Tracker go to scripts directory and exec tracker.sh script.</br><br>
 To exit tracker just press ctrl+c.
-######client
+###### client
 To launch client go to scripts directory and exec client.sh script.
 After launching, type in clients id (we assume that id > 0). After that you
 should receive 'hello' message from tracker. If 'hello' shows up in terminal,
@@ -15,7 +15,7 @@ To exit type in 'request disconnect'. After exiting with ctrl+c, client doesn't
 send disconnect request to tracker which will try to track this 'peer' and some 
 undefined behavior might happen.
 ___
-####Commands available for client
+#### Commands available for client
 * request pull <file_name> - download file from multiple clients at once
 * request push <client_id> <file_name> - send file to client with $client_id
 * request files - get list of files that are available to download
@@ -25,13 +25,13 @@ NOT AVAILABLE YET
 * list broken - list files that are not complete due to some error - NOT AVAILABLE YET
 * list files - list owned files
 
-####Communication between hosts explanation
+#### Communication between hosts explanation
 Every running client is connected to tracker which is main communication hub.
 After executing any command starting with 'request, serialized object is sent to tracker.
 <br> Tracker after receiving request processes it (i.e. sends list of files to client or in case
 of file transfer requests(PushRequest, PullRequest) generates Orders that will be sent
 to all clients taking part in transfer).
-######Types of Requests:
+###### Types of Requests:
 * PushRequest - contains:
     * requester id - id of client that will upload file
     * request code
@@ -58,7 +58,7 @@ to all clients taking part in transfer).
     Request might be used with codes(DISCONNECT or FILE_LIST) 
     since these two don't require any additional parameters.
     
- ######Types of orders:
+ ###### Types of orders:
  * DownloadOrder - contains:
     * Metadata of file that will be transferred(file name, size, md5sum)
     * Metadata of seeds (id, address) 
@@ -73,10 +73,10 @@ to all clients taking part in transfer).
     no pieces missing in the middle of the file) but length of all pieces combined is less than file size
     then seed will need to send 'trailing bytes' 
     
-  ######Some images to visualise communication process:
+  ###### Some images to visualise communication process:
    
 ___
-#####TODO:
+##### TODO:
  * images to visualise communication process
  * unit tests
  * checking with regex instead of startsWith in Client/CommandProcessor

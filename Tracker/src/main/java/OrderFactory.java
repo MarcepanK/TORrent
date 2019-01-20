@@ -121,6 +121,12 @@ public class OrderFactory {
         return null;
     }
 
+    /**
+     * Invoked when tracker receives RetryDownloadRequest and has to generate SpeceificPiecesUploadOrder
+     * that will be sent to seed
+     *
+     * @return
+     */
     public static SpecificPiecesUploadOrder getSpecificPiecesUploadOrder(TorrentContainer torrentContainer,
                                                                          RetryDownloadRequest request) {
         Optional<TrackedTorrent> torrent = torrentContainer.getTrackedTorrentByFileName(request.transferredFileMetadata.name);

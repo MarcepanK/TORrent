@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="3" failures="0" name="TrackedPeerTest" time="0.002" errors="0" skipped="0">
+<testsuite tests="3" failures="0" name="TrackedPeerTest" time="0.001" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="/usr/local/java/jdk1.8.0_191/jre/lib/amd64"/>
@@ -65,5 +65,5 @@
   </properties>
   <testcase classname="TrackedPeerTest" name="TrackedPeerTest_CreationWithInitValues" time="0"/>
   <testcase classname="TrackedPeerTest" name="TrackedPeerTest_CreationWithoutInitValues" time="0"/>
-  <testcase classname="TrackedPeerTest" name="TrackedPeerTest_Update" time="0.002"/>
+  <testcase classname="TrackedPeerTest" name="TrackedPeerTest_Update" time="0.001"/>
 </testsuite>

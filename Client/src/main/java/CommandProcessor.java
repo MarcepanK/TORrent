@@ -81,7 +81,7 @@ public class CommandProcessor {
                     Object obj = ois.readObject();
                     if (obj instanceof RetryDownloadRequest) {
                         RetryDownloadRequest request = (RetryDownloadRequest) obj;
-                        System.out.println(request.requesterId + " " + request.transferredFileMetadata.name);
+                        System.out.println(String.format(request.requesterId + " " + request.transferredFileMetadata.name);
                         trackerConnection.send(request);
                         logger.info("Retry download request sent to tracker");
                         break;

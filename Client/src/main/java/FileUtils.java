@@ -77,6 +77,10 @@ public class FileUtils {
                 missingPieces.addAll(Arrays.asList(trailingPieces));
             }
         }
+        for (Piece piece : missingPieces) {
+            System.out.println("Missing piece: " + piece.index + " | " + piece.data.length);
+        }
+        System.out.println("Trailing bytes: " + trailingBytes);
         return missingPieces;
     }
 
@@ -194,6 +198,7 @@ public class FileUtils {
                 while(ois.available() > 0) {
                     Object rcv = ois.readObject();
                     if (rcv instanceof Piece) {
+                        System.out.println("Piece from file: " + ((Piece) rcv).index + " | " + ((Piece) rcv).index) ;
                         pieces.add((Piece) rcv);
                     }
                 }

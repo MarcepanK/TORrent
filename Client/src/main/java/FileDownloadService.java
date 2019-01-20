@@ -91,7 +91,7 @@ public class FileDownloadService extends FileTransferService {
                         pieceBuffer.addAll(pieces);
                         FileUtils.assembleFileFromPieces(pieceBuffer, Client.DEFAULT_PATH_PREFIX +
                                 myId + "/" + pieceBuffer.get(0).fileMetadata.name);
-
+                        FileUtils.removeBrokenFiles(myId, transferredFileMetadata.name);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

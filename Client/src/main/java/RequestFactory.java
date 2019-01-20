@@ -1,14 +1,16 @@
+import common.FileMetadata;
 import request.*;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 public class RequestFactory {
 
     /**
      * Returns Request depending on what client typed into console
      *
-     * @param requestStr arguments that clients enters into console
-     * @return Request object dependend on arguments
+     * @param requestStr arguments that client types into console
+     * @return Request object depending on arguments
      */
     public static Request getRequest(int clientId, String requestStr) {
         String[] args = requestStr.split("\\s+");
@@ -22,11 +24,17 @@ public class RequestFactory {
         }
     }
 
-    public static Request getDisconnectRequest() {
+    public static RetryDownloadRequest getRequest(int clientId, FileMetadata transferredFileMetadata,
+                                                  Collection<Integer> missingPiecesIndexes, int missingBytesCount) {
+        return new RetryDownloadRequest(clientId, RequestCode.RETRY, transferredFileMetadata,
+                missingPiecesIndexes, missingBytesCount);
+    }
+
+    public static Request getRequest() {
         return new Request(0, RequestCode.DISCONNECT);
     }
 
-    public static UpdateRequest getUpdateRequest(int clientId, long downloaded, long uploaded, String fileName) {
+    public static UpdateRequest getRequest(int clientId, long downloaded, long uploaded, String fileName) {
         return new UpdateRequest(clientId, RequestCode.UPDATE, downloaded, uploaded, fileName);
     }
 

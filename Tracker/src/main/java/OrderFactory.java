@@ -1,8 +1,10 @@
 import common.ClientMetadata;
 import order.DownloadOrder;
+import order.SpecificPiecesUploadOrder;
 import order.UploadOrder;
 import request.PullRequest;
 import request.PushRequest;
+import request.RetryDownloadRequest;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -12,7 +14,7 @@ public class OrderFactory {
     /**
      * Invoked when tracker receives PullRequest and has to generate
      * UploadOrders that will be sent to seeds
-     *
+     * <p>
      * Searches for all {@link TrackedPeer} that own requested file
      * and returns Array of {@link UploadOrder} that will be sent
      * to those peers
@@ -26,11 +28,9 @@ public class OrderFactory {
             TrackedPeer[] seeds = torrent.get().getPeersWithCompleteFile();
             UploadOrder[] uploadOrders = new UploadOrder[seeds.length];
             System.out.println("seeds: " + seeds.length);
-            for(int i=0; i<seeds.length; i++) {
-                System.out.println("added upload order for id: %d" + seeds[i].clientMetadata.id);
-                uploadOrders[i] = new UploadOrder(torrent.get().fileMetadata, request.requesterId, i+1, seeds.length);
+            for (int i = 0; i < seeds.length; i++) {
+                uploadOrders[i] = new UploadOrder(torrent.get().fileMetadata, request.requesterId, i + 1, seeds.length);
             }
-            System.out.println("Upload orders len: " + uploadOrders.length);
             return uploadOrders;
         }
         return null;
@@ -39,7 +39,7 @@ public class OrderFactory {
     /**
      * Invoked when tracker receives PushRequest and has to generate
      * Upload Order that will be sent to seed
-     *
+     * <p>
      * Returns {@link UploadOrder} to client that sent request
      *
      * @param request {@link PushRequest} that has been received
@@ -59,23 +59,44 @@ public class OrderFactory {
     /**
      * Invoked when tracker receives PullRequest and has to genereate downloadOrdere
      * that will be sent to leech
-     *
+     * <p>
      * Returns {@link DownloadOrder} to client that sent request with Pull {@link request.RequestCode}
      * Searches for all peers that are capable of sending requested file and places their {@link ClientMetadata}
      * in {@link DownloadOrder}
      *
-     * @param pullRequest {@link PullRequest} that has been received
+     * @param request {@link PullRequest} that has been received
      * @return {@link DownloadOrder}
      */
-    public static DownloadOrder getDownloadOrder(TorrentContainer torrentContainer, PullRequest pullRequest) {
+    public static DownloadOrder getDownloadOrder(TorrentContainer torrentContainer, PullRequest request) {
         ArrayList<ClientMetadata> seedsMetadata = new ArrayList<>();
-        Optional<TrackedTorrent> torrent = torrentContainer.getTrackedTorrentByFileName(pullRequest.fileName);
+        Optional<TrackedTorrent> torrent = torrentContainer.getTrackedTorrentByFileName(request.fileName);
         if (torrent.isPresent()) {
             TrackedPeer[] peers = torrent.get().getPeersWithCompleteFile();
             for (TrackedPeer peer : peers) {
                 seedsMetadata.add(peer.clientMetadata);
             }
             return new DownloadOrder(torrent.get().fileMetadata, seedsMetadata.toArray(new ClientMetadata[0]));
+        }
+        return null;
+    }
+
+    /**
+     * Invoked when tracker receives RetryDownloadRequest and has to generate download order
+     * that will be sent to leech
+     *
+     * @param torrentContainer
+     * @param request
+     * @return
+     */
+    public static DownloadOrder getDownloadOrder(TorrentContainer torrentContainer, RetryDownloadRequest request) {
+        Optional<TrackedTorrent> torrent = torrentContainer.getTrackedTorrentByFileName(request.transferredFileMetadata.name);
+        if (torrent.isPresent()) {
+            Optional<TrackedPeer> peer = torrent.get().getPeerById(request.requesterId);
+            if (peer.isPresent()) {
+                ClientMetadata[] seeds = new ClientMetadata[1];
+                seeds[0] = peer.get().clientMetadata;
+                return new DownloadOrder(torrent.get().fileMetadata, seeds);
+            }
         }
         return null;
     }
@@ -102,4 +123,13 @@ public class OrderFactory {
         return null;
     }
 
+    public static SpecificPiecesUploadOrder getSpecificPiecesUploadOrder(TorrentContainer torrentContainer,
+                                                                         RetryDownloadRequest request) {
+        Optional<TrackedTorrent> torrent = torrentContainer.getTrackedTorrentByFileName(request.transferredFileMetadata.name);
+        if (torrent.isPresent()) {
+            return new SpecificPiecesUploadOrder(request.transferredFileMetadata, request.requesterId,
+                    request.missingPiecesIndexes, request.missingBytesCount);
+        }
+        return null;
+    }
 }

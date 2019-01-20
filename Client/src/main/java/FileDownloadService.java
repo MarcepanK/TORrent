@@ -71,19 +71,48 @@ public class FileDownloadService extends FileTransferService {
 
     /**
      * sorts elements of PieceBuffer containing {@link Piece}
-     * and assembles them into file
+     * If there are no pieces missing assembles the files
+     * If there are some pieces missing, passes this service to {@link IncompleteServiceHandler}
+     * to handle it
      */
     @Override
     protected void finalize() {
         if (!complete) {
             logger.info("Finalizing service");
             pieceBuffer.sort(Comparator.comparingInt(o -> o.index));
-            try {
-                FileUtils.assembleFileFromPieces(pieceBuffer.toArray(new Piece[0]), Client.DEFAULT_PATH_PREFIX + myId + "/" + pieceBuffer.get(0).fileMetadata.name);
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (hasWholeFile()) {
+                try {
+                    logger.info("assembling file");
+                    FileUtils.assembleFileFromPieces(pieceBuffer.toArray(new Piece[0]), Client.DEFAULT_PATH_PREFIX
+                            + myId + "/" + pieceBuffer.get(0).fileMetadata.name);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                logger.warning("Service not complete.");
+                IncompleteServiceHandler.handleIncompleteDownloadService(this);
             }
             complete = true;
+        }
+    }
+
+
+    /**
+     * Returns True if downloaded bytes size is equal to requested file sile
+     *
+     * @return true if file is complete
+     */
+    private boolean hasWholeFile() {
+        int allPiecesLen = 0;
+        for (Piece piece : pieceBuffer) {
+            allPiecesLen += piece.data.length;
+        }
+        if (allPiecesLen == transferredFileMetadata.size) {
+            logger.info("whole file has beend downloaded");
+            return true;
+        }  else {
+            logger.warning("something went wrong when downloading file");
+            return false;
         }
     }
 
@@ -108,5 +137,17 @@ public class FileDownloadService extends FileTransferService {
 
     public boolean isComplete() {
         return complete;
+    }
+
+    public FileMetadata getTransferredFileMetadata() {
+        return transferredFileMetadata;
+    }
+
+    public int getMyId() {
+        return myId;
+    }
+
+    public List<Piece> getPieceBuffer() {
+        return pieceBuffer;
     }
 }

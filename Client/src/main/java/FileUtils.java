@@ -1,9 +1,7 @@
 import common.FileMetadata;
+import request.RetryDownloadRequest;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -106,11 +104,15 @@ public class FileUtils {
         return pieces;
     }
 
-    public static void assembleFileFromPieces(Piece[] pieces, String path) throws Exception {
-        createFile(path);
-        FileOutputStream fos = new FileOutputStream(new File(path));
-        for (Piece piece : pieces){
-            fos.write(piece.data);
+    public static void assembleFileFromPieces(Piece[] pieces, String path) {
+        try {
+            createFile(path);
+            FileOutputStream fos = new FileOutputStream(new File(path));
+            for (Piece piece : pieces){
+                fos.write(piece.data);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -124,5 +126,17 @@ public class FileUtils {
 
     public static FileMetadata getFileMetadata(File file) {
         return new FileMetadata(file);
+    }
+
+    public static void storeRetryDownloadRequestInFile(RetryDownloadRequest request) {
+        try {
+            String path = Client.DEFAULT_PATH_PREFIX + request.requesterId + "/" +
+                    request.transferredFileMetadata.name + ".ser";
+            createFile(path);
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(path));
+            oos.writeObject(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

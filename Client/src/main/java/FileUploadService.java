@@ -23,14 +23,9 @@ public class FileUploadService extends FileTransferService {
         establishConnectionWithLeech(leechId);
     }
 
-    /**
-     * Creates connection to leech
-     *
-     * @param leechId id of leech
-     */
     private void establishConnectionWithLeech(int leechId) {
         try {
-            Thread.sleep(3000);
+            Thread.sleep(2000);
             leechConnection = new Connection(new Socket("localhost", 10000 + leechId));
             logger.info(String.format("connection to leech with id: %d established", leechId));
             Thread.sleep(5000);
@@ -39,11 +34,14 @@ public class FileUploadService extends FileTransferService {
         }
     }
 
-
+    /**
+     * sends Request with Disconnect code
+     * to leech and closes connection to it
+     */
     @Override
     protected void finalize() {
         logger.info("finalizing upload service");
-        leechConnection.send(RequestFactory.getDisconnectRequest());
+        leechConnection.send(RequestFactory.getRequest());
         leechConnection.close();
         complete = true;
     }
@@ -56,7 +54,7 @@ public class FileUploadService extends FileTransferService {
             for (Piece piece : piecesToSend) {
                 logger.info("Sending " + piece);
                 leechConnection.send(piece);
-                trackerConnection.send(RequestFactory.getUpdateRequest(myId, 0L,
+                trackerConnection.send(RequestFactory.getRequest(myId, 0L,
                         piece.data.length, piece.fileMetadata.name));
             }
             finalize();
@@ -66,5 +64,4 @@ public class FileUploadService extends FileTransferService {
     public boolean isComplete() {
         return complete;
     }
-
 }

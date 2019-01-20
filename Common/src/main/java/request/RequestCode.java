@@ -6,5 +6,6 @@ public enum RequestCode {
     FILE_LIST,
     PULL,
     PUSH,
+    RETRY,
     UNKNOWN
 }

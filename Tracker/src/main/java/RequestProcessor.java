@@ -90,10 +90,17 @@ public class RequestProcessor {
      * @param request {@link PushRequest} that has been received
      */
     private void processPushRequest(PushRequest request) {
-        logger.info(String.format("Handling %s request | from %d to %d | file: %s",
+        logger.info(String.format("Handling %s request | from %d  | file: %s",
                 request.requestCode.toString(), request.requesterId, request.destinationHostId, request.fileName));
         orderDispatcher.dispatchOrders(OrderFactory.getDownloadOrder(torrentContainer, request),
                                   OrderFactory.getUploadOrder(torrentContainer, request));
+    }
+
+    private void processRetryRequest(RetryDownloadRequest request) {
+        logger.info(String.format("Handling %s request | from %d | file: %s",
+                request.requestCode.toString(), request.requesterId, request.transferredFileMetadata.name));
+        orderDispatcher.dispatchOrders(OrderFactory.getDownloadOrder(torrentContainer, request),
+                                OrderFactory.getSpecificPiecesUploadOrder(torrentContainer, request));
     }
 
     /**
@@ -129,6 +136,9 @@ public class RequestProcessor {
                     break;
                 case PULL:
                     processPullRequest((PullRequest) request);
+                    break;
+                case RETRY:
+                    processRetryRequest((RetryDownloadRequest) request);
                     break;
                 default:
                     handleUnknownRequest(request);

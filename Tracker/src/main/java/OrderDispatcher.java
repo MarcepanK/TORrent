@@ -1,6 +1,7 @@
 import common.ClientMetadata;
 import common.FileMetadata;
 import order.DownloadOrder;
+import order.SpecificPiecesUploadOrder;
 import order.UploadOrder;
 
 import java.util.logging.Logger;
@@ -42,6 +43,13 @@ public class OrderDispatcher {
      * @param uploadOrder order that will be sent to seed
      */
     public void dispatchOrders(DownloadOrder downloadOrder, UploadOrder uploadOrder) {
+        if (orderValid(downloadOrder) && orderValid(uploadOrder)) {
+            connectionContainer.getConnectionById(uploadOrder.leechId).get().send(downloadOrder);
+            connectionContainer.getConnectionById(downloadOrder.seeds[0].id).get().send(uploadOrder);
+        }
+    }
+
+    public void dispatchOrders(DownloadOrder downloadOrder, SpecificPiecesUploadOrder uploadOrder) {
         if (orderValid(downloadOrder) && orderValid(uploadOrder)) {
             connectionContainer.getConnectionById(uploadOrder.leechId).get().send(downloadOrder);
             connectionContainer.getConnectionById(downloadOrder.seeds[0].id).get().send(uploadOrder);
@@ -112,6 +120,11 @@ public class OrderDispatcher {
                 return false;
             }
         }
+        return true;
+    }
+
+    //TODO
+    private boolean orderValid(SpecificPiecesUploadOrder order) {
         return true;
     }
 }

@@ -17,7 +17,8 @@ public class CommandProcessor {
     private FileRepository fileRepository;
     private TransferServiceContainer transferServiceContainer;
 
-    public CommandProcessor(int clientId, Connection trackerConnection, FileRepository fileRepository, TransferServiceContainer transferServiceContainer) {
+    public CommandProcessor(int clientId, Connection trackerConnection, FileRepository fileRepository,
+                            TransferServiceContainer transferServiceContainer) {
         this.clientId = clientId;
         this.trackerConnection = trackerConnection;
         this.fileRepository = fileRepository;
@@ -81,7 +82,7 @@ public class CommandProcessor {
                     Object obj = ois.readObject();
                     if (obj instanceof RetryDownloadRequest) {
                         RetryDownloadRequest request = (RetryDownloadRequest) obj;
-                        System.out.println(String.format(request.requesterId + " " + request.transferredFileMetadata.name);
+                        System.out.println(String.format("%d %s", request.requesterId, request.transferredFileMetadata));
                         trackerConnection.send(request);
                         logger.info("Retry download request sent to tracker");
                         break;

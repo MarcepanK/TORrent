@@ -10,7 +10,7 @@ import java.util.Optional;
 public class FileTransferServiceFactory {
 
     public static FileUploadService getService(int myId, UploadOrder order, FileRepository fileRepository,
-                                               Connection trackerConnection) throws Exception {
+                                               Connection trackerConnection) {
         Optional<File> orderedFile = fileRepository.getFileByMd5sum(order.orderedFileMetadata.md5sum);
         if (orderedFile.isPresent()) {
             Optional<FileMetadata> fileMetadata = fileRepository.getFileMetadata(orderedFile.get());

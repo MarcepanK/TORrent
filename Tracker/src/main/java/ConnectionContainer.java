@@ -30,7 +30,8 @@ public class ConnectionContainer {
      */
     public void onClientConnected(int clientId, Connection connection) {
         connections.put(clientId, connection);
-        logger.info(String.format("common.Connection has been established with id: %d\nCurrently stored connections: %d", clientId, connections.size()));
+        logger.info(String.format("common.Connection has been established with id: %d\nCurrently stored connections: %d",
+                clientId, connections.size()));
     }
 
     /**

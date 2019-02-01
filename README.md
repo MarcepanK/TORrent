@@ -1,6 +1,8 @@
 TORrent
 ===
 #### How to launch
+###### to build
+mvn package in main project directory
 ###### tracker
 In order to launch any client, tracked has to be up and running. 
 To run Tracker go to scripts directory and exec tracker.sh script.</br><br>

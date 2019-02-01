@@ -77,7 +77,8 @@ public class OrderDispatcher {
                 logger.warning("wring file part to send");
                 return false;
             } else if (currentOrder.totalParts != orderCount) {
-                logger.warning(String.format("wrong total parts | total parts: %d  | order count: %d", currentOrder.totalParts, orderCount));
+                logger.warning(String.format("wrong total parts | total parts: %d  | order count: %d",
+                        currentOrder.totalParts, orderCount));
                 return false;
             } else if (currentOrder.leechId != leechId) {
                 logger.warning("wrong leech");
